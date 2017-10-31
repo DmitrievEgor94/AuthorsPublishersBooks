@@ -3,6 +3,7 @@ package com.mycompany.books_authors_publishers.enteties_for_serializing;
 import com.mycompany.books_authors_publishers.Book;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
@@ -12,27 +13,27 @@ public class BookEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @OnlyInteger
     private Integer id;
     private String title;
-    @Date
-    private String publicationDate;
-    @ListField
+    private LocalDate publicationDate;
     private List<Integer> authorsId;
-
-    public BookEntity() {
-    }
 
     public BookEntity(Book book, Map<String, Integer> mapWithAuthorsNames, int id) {
         this.title = book.getTitle();
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        this.publicationDate = book.getPublicationDate().format(formatter);
+        this.publicationDate = book.getPublicationDate();
 
         this.authorsId = book.getAuthors().stream()
                 .map(author -> mapWithAuthorsNames.get(author.getName()))
                 .collect(Collectors.toList());
         this.id = id;
+    }
+
+    public BookEntity(Integer id, String title, LocalDate publicationDate, List<Integer> authorsId) {
+        this.id = id;
+        this.title = title;
+        this.publicationDate = publicationDate;
+        this.authorsId = authorsId;
     }
 
     public int getId() {
@@ -43,7 +44,7 @@ public class BookEntity implements Serializable {
         return title;
     }
 
-    public String getPublicationDate() {
+    public LocalDate getPublicationDate() {
         return publicationDate;
     }
 
@@ -54,6 +55,8 @@ public class BookEntity implements Serializable {
     @Override
     public boolean equals(Object obj) {
         if (obj == this) return true;
+
+        if (obj == null) return false;
 
         if (this.getClass() != obj.getClass()) return false;
 

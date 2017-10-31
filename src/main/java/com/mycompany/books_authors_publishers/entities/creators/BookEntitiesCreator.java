@@ -12,10 +12,13 @@ import java.util.stream.Collectors;
 public class BookEntitiesCreator {
     static public List<BookEntity> getListBookEntities(List<Book> books, List<AuthorEntity> authorEntities) {
 
+        if (books == null) return null;
+
         Map<String, Integer> mapAuthorNameId = authorEntities.stream()
                 .collect(Collectors.toMap(AuthorEntity::getName, AuthorEntity::getId));
 
         AtomicInteger counter = new AtomicInteger(0);
+
 
         return books.stream()
                 .map(b -> new BookEntity(b, mapAuthorNameId, counter.incrementAndGet()))

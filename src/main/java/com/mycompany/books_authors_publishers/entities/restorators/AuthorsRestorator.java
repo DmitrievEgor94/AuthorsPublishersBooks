@@ -9,9 +9,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class AuthorsRestorator {
-
-    static private final String ABSENT_DEATH_DATE = "-";
-
     static public List<Author> getListOfAuthors(List<AuthorEntity> entities) {
         return entities.stream()
                 .map(AuthorsRestorator::getAuthor)
@@ -19,19 +16,6 @@ public class AuthorsRestorator {
     }
 
     static private Author getAuthor(AuthorEntity entity) {
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        LocalDate dayOfBirthday = LocalDate.parse(entity.getDayOfBirthday(), formatter);
-
-        LocalDate dayOfDeath = null;
-        String dayOfDeathString = entity.getDayOfDeath();
-
-        if (!dayOfDeathString.equals(ABSENT_DEATH_DATE)) {
-            dayOfDeath = LocalDate.parse(dayOfDeathString, formatter);
-        }
-
-        Author.Sex sex = Author.Sex.valueOf(entity.getSex());
-
-        return new Author(entity.getName(), dayOfBirthday, dayOfDeath, sex);
+        return new Author(entity.getName(), entity.getDayOfBirthday(), entity.getDayOfDeath(), entity.getSex());
     }
 }

@@ -4,40 +4,30 @@ import com.mycompany.books_authors_publishers.Author;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 public class AuthorEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
-    @OnlyInteger
     private Integer id;
     private String name;
-    @Date
-    private String dayOfBirthday;
-    @Date
-    @PermissionToBeNull
-    private String dayOfDeath;
-    private String sex;
+    private LocalDate dayOfBirthday;
+    private LocalDate dayOfDeath;
+    private Author.Sex sex;
 
     public AuthorEntity(Author author, int id) {
-        final String ABSENT_DEATH_DATE = "-";
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-
         this.name = author.getName();
-        this.dayOfBirthday = author.getDayOfBirthday().format(formatter);
-
-        LocalDate dayOfDeath = author.getDayOfDeath().orElse(null);
-        if (dayOfDeath == null)
-            this.dayOfDeath = ABSENT_DEATH_DATE;
-        else this.dayOfDeath = dayOfDeath.format(formatter);
-
-        this.sex = author.getSex().name();
+        this.dayOfBirthday = author.getDayOfBirthday();
+        this.dayOfDeath = author.getDayOfDeath().orElse(null);
+        this.sex = author.getSex();
         this.id = id;
     }
 
-    public AuthorEntity() {
+    public AuthorEntity(Integer id, String name, LocalDate dayOfBirthday, LocalDate dayOfDeath, Author.Sex sex) {
+        this.id = id;
+        this.name = name;
+        this.dayOfBirthday = dayOfBirthday;
+        this.dayOfDeath = dayOfDeath;
+        this.sex = sex;
     }
 
     public int getId() {
@@ -45,16 +35,16 @@ public class AuthorEntity implements Serializable {
         return id;
     }
 
-    public String getSex() {
+    public Author.Sex getSex() {
         return sex;
     }
 
-    public String getDayOfDeath() {
+    public LocalDate getDayOfDeath() {
 
         return dayOfDeath;
     }
 
-    public String getDayOfBirthday() {
+    public LocalDate getDayOfBirthday() {
 
         return dayOfBirthday;
     }
@@ -66,6 +56,8 @@ public class AuthorEntity implements Serializable {
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
+
+        if (obj == null) return false;
 
         if (obj.getClass() != this.getClass()) return false;
 

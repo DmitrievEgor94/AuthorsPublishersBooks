@@ -14,12 +14,8 @@ import java.util.stream.Collectors;
 public class BooksRestorator {
 
     static public List<Book> getListOfBooks(List<BookEntity> entities, List<Author> authors, List<AuthorEntity> authorEntities) {
-        return entities.stream()
-                .map(b->getBook(b,authors,authorEntities))
-                        .collect(Collectors.toList());
-    }
 
-    static private Book getBook(BookEntity bookEntity, List<Author> authors, List<AuthorEntity> authorEntities) {
+        if (entities == null) return null;
 
         Map<String, Author> mapNameAndAuthor = authors.stream()
                 .collect(Collectors.toMap(Author::getName, a -> a));
@@ -27,10 +23,13 @@ public class BooksRestorator {
         Map<Integer, Author> mapIdAuthor = authorEntities.stream()
                 .collect(Collectors.toMap(AuthorEntity::getId, a -> mapNameAndAuthor.get(a.getName())));
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        LocalDate dayOfPublication = LocalDate.parse(bookEntity.getPublicationDate(), formatter);
+        return entities.stream()
+                .map(b->getBook(b,mapIdAuthor))
+                        .collect(Collectors.toList());
+    }
 
-        return new Book(bookEntity.getTitle(), dayOfPublication
+    static private Book getBook(BookEntity bookEntity, Map<Integer, Author> mapIdAuthor) {
+        return new Book(bookEntity.getTitle(), bookEntity.getPublicationDate()
                 , bookEntity.getAuthorsId().stream()
                 .map(mapIdAuthor::get)
                 .collect(Collectors.toList()));
