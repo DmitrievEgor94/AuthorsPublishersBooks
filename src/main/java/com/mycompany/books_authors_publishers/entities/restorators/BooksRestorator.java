@@ -1,12 +1,10 @@
-package com.mycompany.books_authors_publishers.entities_creators_and_restorators;
+package com.mycompany.books_authors_publishers.entities.restorators;
 
 import com.mycompany.books_authors_publishers.Author;
 import com.mycompany.books_authors_publishers.Book;
-import com.mycompany.books_authors_publishers.enteties_for_serializing.AuthorEntity;
-import com.mycompany.books_authors_publishers.enteties_for_serializing.BookEntity;
+import com.mycompany.books_authors_publishers.entities.AuthorEntity;
+import com.mycompany.books_authors_publishers.entities.BookEntity;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -24,8 +22,8 @@ public class BooksRestorator {
                 .collect(Collectors.toMap(AuthorEntity::getId, a -> mapNameAndAuthor.get(a.getName())));
 
         return entities.stream()
-                .map(b->getBook(b,mapIdAuthor))
-                        .collect(Collectors.toList());
+                .map(b -> getBook(b, mapIdAuthor))
+                .collect(Collectors.toList());
     }
 
     static private Book getBook(BookEntity bookEntity, Map<Integer, Author> mapIdAuthor) {

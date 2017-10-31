@@ -1,6 +1,6 @@
-package com.mycompany.serializer.validators_of_objects;
+package com.mycompany.serializer.validators;
 
-import com.mycompany.serializer.readers_of_objects.BracketsFinder;
+import com.mycompany.serializer.readers.BracketsFinder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +28,7 @@ public class Validator {
         int listAuthorsContentEnding = closeBracketsPositions.get(0);
         String listAuthorsContent = content.substring(listAuthorsContentBeginning, listAuthorsContentEnding);
 
-        if (!AuthorsValidatorInFile.validateAuthors(listAuthorsContent)) {
+        if (!AuthorsValidator.validateAuthors(listAuthorsContent)) {
             return false;
         }
 
@@ -36,7 +36,7 @@ public class Validator {
         int listBooksContentEnding = closeBracketsPositions.get(1);
         String listBooksContent = content.substring(listBooksContentBeginning, listBooksContentEnding);
 
-        if (!BooksValidatorInFile.validateBooks(listBooksContent, listAuthorsContent)) {
+        if (!BooksValidator.validateBooks(listBooksContent, listAuthorsContent)) {
             return false;
 
         }

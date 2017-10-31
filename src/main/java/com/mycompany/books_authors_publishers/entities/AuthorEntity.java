@@ -1,4 +1,4 @@
-package com.mycompany.books_authors_publishers.enteties_for_serializing;
+package com.mycompany.books_authors_publishers.entities;
 
 import com.mycompany.books_authors_publishers.Author;
 

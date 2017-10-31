@@ -1,6 +1,6 @@
-package com.mycompany.serializer.writers_of_objects;
+package com.mycompany.serializer.writers;
 
-import com.mycompany.books_authors_publishers.enteties_for_serializing.PublisherEntity;
+import com.mycompany.books_authors_publishers.entities.PublisherEntity;
 
 import java.io.PrintWriter;
 import java.util.List;
@@ -15,7 +15,7 @@ public class PublishersWriterInFile {
     private static final String BOOKS_ID_FIELD = "BooksID";
 
     public static void writePublishers(PrintWriter file, List<PublisherEntity> publishers) {
-        if (file== null) return;
+        if (file == null) return;
 
         file.println(LIST_OPEN_BRACKET);
 
@@ -47,6 +47,6 @@ public class PublishersWriterInFile {
             stringBuilder.append(integer).append(" ");
         }
 
-        return String.format("%s: %s", field, stringBuilder);
+        return String.format("  %s: %s", field, stringBuilder);
     }
 }

@@ -1,6 +1,6 @@
-package com.mycompany.serializer.readers_of_objects;
+package com.mycompany.serializer.readers;
 
-import com.mycompany.books_authors_publishers.enteties_for_serializing.PublisherEntity;
+import com.mycompany.books_authors_publishers.entities.PublisherEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +35,7 @@ public class PublishersReader {
 
             String booksIdList = scanner.nextLine();
             List<Integer> booksId = ListIdGetter.getIdList(booksIdList);
-            
+
             publisherEntities.add(new PublisherEntity(name, booksId));
         }
 

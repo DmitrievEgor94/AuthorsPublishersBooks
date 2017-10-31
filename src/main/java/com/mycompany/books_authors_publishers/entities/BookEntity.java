@@ -1,10 +1,9 @@
-package com.mycompany.books_authors_publishers.enteties_for_serializing;
+package com.mycompany.books_authors_publishers.entities;
 
 import com.mycompany.books_authors_publishers.Book;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;

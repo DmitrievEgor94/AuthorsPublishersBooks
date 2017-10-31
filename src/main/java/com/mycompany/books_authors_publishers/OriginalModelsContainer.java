@@ -2,12 +2,12 @@ package com.mycompany.books_authors_publishers;
 
 import java.util.List;
 
-public class AllModelsLists {
-    List<Author> authors;
-    List<Book> books;
-    List<Publisher> publishers;
+public class OriginalModelsContainer {
+    private List<Author> authors;
+    private List<Book> books;
+    private List<Publisher> publishers;
 
-    public AllModelsLists(List<Author> authors, List<Book> books, List<Publisher> publishers) {
+    public OriginalModelsContainer(List<Author> authors, List<Book> books, List<Publisher> publishers) {
         this.authors = authors;
         this.books = books;
         this.publishers = publishers;

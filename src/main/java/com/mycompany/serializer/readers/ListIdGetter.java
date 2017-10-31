@@ -1,10 +1,10 @@
-package com.mycompany.serializer.readers_of_objects;
+package com.mycompany.serializer.readers;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class ListIdGetter {
+class ListIdGetter {
     static List<Integer> getIdList(String contentWithId) {
         List<Integer> authorsId = new ArrayList<>();
 

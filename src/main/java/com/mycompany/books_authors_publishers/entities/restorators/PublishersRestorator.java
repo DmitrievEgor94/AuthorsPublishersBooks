@@ -1,9 +1,9 @@
-package com.mycompany.books_authors_publishers.entities_creators_and_restorators;
+package com.mycompany.books_authors_publishers.entities.restorators;
 
 import com.mycompany.books_authors_publishers.Book;
 import com.mycompany.books_authors_publishers.Publisher;
-import com.mycompany.books_authors_publishers.enteties_for_serializing.BookEntity;
-import com.mycompany.books_authors_publishers.enteties_for_serializing.PublisherEntity;
+import com.mycompany.books_authors_publishers.entities.BookEntity;
+import com.mycompany.books_authors_publishers.entities.PublisherEntity;
 
 import java.util.List;
 import java.util.Map;
@@ -27,7 +27,7 @@ public class PublishersRestorator {
                 .collect(Collectors.toList());
     }
 
-    static private Publisher getPublisher(PublisherEntity entity, Map<Integer,Book> mapIdBook) {
+    static private Publisher getPublisher(PublisherEntity entity, Map<Integer, Book> mapIdBook) {
 
         return new Publisher(entity.getName(),
                 entity.getBooksId().stream()

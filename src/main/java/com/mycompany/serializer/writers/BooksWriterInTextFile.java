@@ -1,6 +1,6 @@
-package com.mycompany.serializer.writers_of_objects;
+package com.mycompany.serializer.writers;
 
-import com.mycompany.books_authors_publishers.enteties_for_serializing.BookEntity;
+import com.mycompany.books_authors_publishers.entities.BookEntity;
 
 import java.io.PrintWriter;
 import java.time.format.DateTimeFormatter;

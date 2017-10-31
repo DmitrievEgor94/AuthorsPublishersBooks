@@ -1,6 +1,6 @@
-package com.mycompany.serializer.validators_of_objects;
+package com.mycompany.serializer.validators;
 
-import com.mycompany.serializer.readers_of_objects.BracketsFinder;
+import com.mycompany.serializer.readers.BracketsFinder;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -8,7 +8,7 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Scanner;
 
-class AuthorsValidatorInFile {
+class AuthorsValidator {
 
     private static final String CLASS_OPEN_BRACKET = "{";
     private static final String CLASS_CLOSE_BRACKET = "}";

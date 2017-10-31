@@ -23,6 +23,8 @@ public class Publisher {
     public boolean equals(Object obj) {
         if (obj == this) return true;
 
+        if (obj == null) return false;
+
         if (this.getClass() != obj.getClass()) return false;
 
         Publisher publisher = (Publisher) obj;

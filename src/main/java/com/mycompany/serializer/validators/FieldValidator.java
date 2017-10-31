@@ -1,4 +1,4 @@
-package com.mycompany.serializer.validators_of_objects;
+package com.mycompany.serializer.validators;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -40,11 +40,10 @@ class FieldValidator {
             LocalDate.parse(date, FORMATTER);
         } catch (DateTimeParseException e) {
             return false;
-            }
+        }
 
         return true;
     }
-
 
 
     static boolean checkNumberOfTokens(String string) {
@@ -60,7 +59,7 @@ class FieldValidator {
 
         Scanner scanner = new Scanner(tokens[POSITION_OF_VALUE_TOKEN]);
 
-        while (scanner.hasNextInt()){
+        while (scanner.hasNextInt()) {
             int id = scanner.nextInt();
 
             if (!availableId.contains(id)) {

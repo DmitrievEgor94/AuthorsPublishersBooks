@@ -37,6 +37,8 @@ public class Book {
     public boolean equals(Object obj) {
         if (obj == this) return true;
 
+        if (obj == null) return false;
+
         if (this.getClass() != obj.getClass()) return false;
 
         Book book = (Book) obj;

@@ -1,15 +1,15 @@
-package com.mycompany.serializer.validators_of_objects;
+package com.mycompany.serializer.validators;
 
-import com.mycompany.serializer.readers_of_objects.BracketsFinder;
+import com.mycompany.serializer.readers.BracketsFinder;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 class GetterAvailableIdList {
+
     private static final String CLASS_OPEN_BRACKET = "{";
     private static final String CLASS_CLOSE_BRACKET = "}";
-
 
     static List<Integer> getIdList(String content) {
         List<Integer> idList = new ArrayList<>();

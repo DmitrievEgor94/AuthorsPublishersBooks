@@ -1,4 +1,4 @@
-package com.mycompany.books_authors_publishers.enteties_for_serializing;
+package com.mycompany.books_authors_publishers.entities;
 
 import com.mycompany.books_authors_publishers.Publisher;
 
@@ -44,14 +44,7 @@ public class PublisherEntity implements Serializable {
 
         PublisherEntity entity = (PublisherEntity) obj;
 
-        if (!this.name.equals(entity.name)) {
-            return false;
-        }
+        return this.name.equals(entity.name) && this.books.equals(entity.books);
 
-        if (!this.books.equals(entity.books)) {
-            return false;
-        }
-
-        return true;
     }
 }

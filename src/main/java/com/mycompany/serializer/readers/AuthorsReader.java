@@ -1,14 +1,13 @@
-package com.mycompany.serializer.readers_of_objects;
+package com.mycompany.serializer.readers;
 
 import com.mycompany.books_authors_publishers.Author;
-import com.mycompany.books_authors_publishers.enteties_for_serializing.AuthorEntity;
+import com.mycompany.books_authors_publishers.entities.AuthorEntity;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.StringTokenizer;
 
 public class AuthorsReader {
     private static final String CLASS_OPEN_BRACKET = "{";

@@ -1,10 +1,15 @@
 package com.mycompany.serializer;
 
+import com.mycompany.books_authors_publishers.Author;
+import com.mycompany.books_authors_publishers.Book;
+import com.mycompany.books_authors_publishers.OriginalModelsContainer;
+import com.mycompany.books_authors_publishers.Publisher;
+
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 public interface Serializer {
-    void serializeObject(Object ob, String fileWithObjects) throws IOException, IllegalAccessException;
+    void serializeObjects(List<Author> authors, List<Book> books, List<Publisher> publishers, String fileWithObjects) throws IOException;
 
-    Object deserializeObject(String fileWithObjects, Class obClass) throws IOException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException;
+    OriginalModelsContainer deserializeObject(String fileWithObjects) throws IOException, ClassNotFoundException;
 }

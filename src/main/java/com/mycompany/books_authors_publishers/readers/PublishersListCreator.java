@@ -1,4 +1,7 @@
-package com.mycompany.books_authors_publishers;
+package com.mycompany.books_authors_publishers.readers;
+
+import com.mycompany.books_authors_publishers.Book;
+import com.mycompany.books_authors_publishers.Publisher;
 
 import java.io.File;
 import java.io.FileNotFoundException;

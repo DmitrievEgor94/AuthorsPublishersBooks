@@ -1,4 +1,4 @@
-package com.mycompany.serializer.readers_of_objects;
+package com.mycompany.serializer.readers;
 
 import java.util.ArrayList;
 import java.util.List;

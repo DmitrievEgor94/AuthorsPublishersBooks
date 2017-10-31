@@ -1,7 +1,7 @@
-package com.mycompany.books_authors_publishers.entities_creators_and_restorators;
+package com.mycompany.books_authors_publishers.entities.creators;
 
 import com.mycompany.books_authors_publishers.Author;
-import com.mycompany.books_authors_publishers.enteties_for_serializing.AuthorEntity;
+import com.mycompany.books_authors_publishers.entities.AuthorEntity;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -15,7 +15,7 @@ public class AuthorEntitiesCreator {
         AtomicInteger counter = new AtomicInteger(0);
 
         return authors.stream()
-                .map(author -> new AuthorEntity(author,counter.incrementAndGet()))
+                .map(author -> new AuthorEntity(author, counter.incrementAndGet()))
                 .collect(Collectors.toList());
     }
 }
