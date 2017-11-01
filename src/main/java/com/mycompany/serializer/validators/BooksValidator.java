@@ -5,12 +5,14 @@ import com.mycompany.serializer.readers.BracketsFinder;
 import java.util.List;
 import java.util.Scanner;
 
-class BooksValidator {
+public class BooksValidator {
 
     private static final String CLASS_OPEN_BRACKET = "{";
     private static final String CLASS_CLOSE_BRACKET = "}";
 
-    static boolean validateBooks(String booksContent, String authorsContent) {
+    private static final int OFFSET_FROM_OPEN_BRACKET = 1;
+
+    public static boolean validate(String booksContent, String authorsContent) {
         List<Integer> openBracketPositions = BracketsFinder.getBracketPositions(booksContent, CLASS_OPEN_BRACKET);
         List<Integer> closeBracketPositions = BracketsFinder.getBracketPositions(booksContent, CLASS_CLOSE_BRACKET);
 
@@ -20,7 +22,7 @@ class BooksValidator {
             int openBracketPosition = openBracketPositions.get(i);
             int closeBracketPosition = closeBracketPositions.get(i);
 
-            String contentOfClass = booksContent.substring(openBracketPosition + 1, closeBracketPosition);
+            String contentOfClass = booksContent.substring(openBracketPosition + OFFSET_FROM_OPEN_BRACKET, closeBracketPosition);
 
             Scanner scanner = new Scanner(contentOfClass);
             scanner.nextLine();

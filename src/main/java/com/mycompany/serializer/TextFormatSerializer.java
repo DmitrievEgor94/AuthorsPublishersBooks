@@ -37,6 +37,12 @@ public class TextFormatSerializer implements Serializer {
     private static final String LIST_OPEN_BRACKET = "[";
     private static final String LIST_CLOSE_BRACKET = "]";
 
+    private static final int ORDER_OF_AUTHORS_BLOCK = 0;
+    private static final int ORDER_OF_BOOKS_BLOCK = 1;
+    private static final int ORDER_OF_PUBLISHERS_BLOCK = 2;
+
+    private static final int OFFSET_FROM_OPEN_BRACKET = 1;
+
     public void serializeObjects(List<Author> authors, List<Book> books, List<Publisher> publishers, String fileWithObjects) throws FileNotFoundException {
         try (PrintWriter fileWriter = new PrintWriter(new File(fileWithObjects))) {
 
@@ -70,21 +76,22 @@ public class TextFormatSerializer implements Serializer {
             List<Integer> openBracketsPositions = BracketsFinder.getBracketPositions(content, LIST_OPEN_BRACKET);
             List<Integer> closeBracketsPositions = BracketsFinder.getBracketPositions(content, LIST_CLOSE_BRACKET);
 
-            int listAuthorsContentBeginning = openBracketsPositions.get(0) + 1;
-            int listAuthorsContentEnding = closeBracketsPositions.get(0);
+
+            int listAuthorsContentBeginning = openBracketsPositions.get(ORDER_OF_AUTHORS_BLOCK) + OFFSET_FROM_OPEN_BRACKET;
+            int listAuthorsContentEnding = closeBracketsPositions.get(ORDER_OF_AUTHORS_BLOCK);
             String listAuthorsContent = content.substring(listAuthorsContentBeginning, listAuthorsContentEnding);
             List<AuthorEntity> authorsEntities = AuthorsReader.readAuthors(listAuthorsContent);
             List<Author> authors = AuthorsRestorator.getListOfAuthors(authorsEntities);
 
-            int listBooksContentBeginning = openBracketsPositions.get(1) + 1;
-            int listBooksContentEnding = closeBracketsPositions.get(1);
+            int listBooksContentBeginning = openBracketsPositions.get(ORDER_OF_BOOKS_BLOCK) + OFFSET_FROM_OPEN_BRACKET;
+            int listBooksContentEnding = closeBracketsPositions.get(ORDER_OF_BOOKS_BLOCK);
             String listBooksContent = content.substring(listBooksContentBeginning, listBooksContentEnding);
             List<BookEntity> bookEntities = BooksReader.readBooks(listBooksContent);
             List<Book> books = BooksRestorator.getListOfBooks(bookEntities, authors, authorsEntities);
 
 
-            int listPublishersContentBeginning = openBracketsPositions.get(2) + 1;
-            int listPublishersContentEnding = closeBracketsPositions.get(2);
+            int listPublishersContentBeginning = openBracketsPositions.get(ORDER_OF_PUBLISHERS_BLOCK) + OFFSET_FROM_OPEN_BRACKET;
+            int listPublishersContentEnding = closeBracketsPositions.get(ORDER_OF_PUBLISHERS_BLOCK);
             String listPublishersContent = content.substring(listPublishersContentBeginning, listPublishersContentEnding);
             List<PublisherEntity> publisherEntities = PublishersReader.readBooks(listPublishersContent);
             List<Publisher> publishers = PublishersRestorator.getListOfPublishers(publisherEntities, bookEntities, books);

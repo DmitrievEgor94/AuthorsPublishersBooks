@@ -10,7 +10,9 @@ class PublishersValidator {
     private static final String CLASS_OPEN_BRACKET = "{";
     private static final String CLASS_CLOSE_BRACKET = "}";
 
-    static boolean validatePublishers(String publishersContent, String booksContent) {
+    private static final int OFFSET_FROM_OPEN_BRACKET = 1;
+
+    static boolean validate(String publishersContent, String booksContent) {
 
         List<Integer> openBracketPositions = BracketsFinder.getBracketPositions(publishersContent, CLASS_OPEN_BRACKET);
         List<Integer> closeBracketPositions = BracketsFinder.getBracketPositions(publishersContent, CLASS_CLOSE_BRACKET);
@@ -21,7 +23,7 @@ class PublishersValidator {
             int openBracketPosition = openBracketPositions.get(i);
             int closeBracketPosition = closeBracketPositions.get(i);
 
-            String contentOfClass = booksContent.substring(openBracketPosition + 1, closeBracketPosition);
+            String contentOfClass = publishersContent.substring(openBracketPosition + OFFSET_FROM_OPEN_BRACKET, closeBracketPosition);
 
             Scanner scanner = new Scanner(contentOfClass);
             scanner.nextLine();

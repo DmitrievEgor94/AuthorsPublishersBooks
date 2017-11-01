@@ -12,6 +12,12 @@ public class Validator {
     private static final String CLASS_OPEN_BRACKET = "{";
     private static final String CLASS_CLOSE_BRACKET = "}";
 
+    private static final int ORDER_OF_AUTHORS_BLOCK = 0;
+    private static final int ORDER_OF_BOOKS_BLOCK = 1;
+    private static final int ORDER_OF_PUBLISHERS_BLOCK = 2;
+
+    private static final int OFFSET_FROM_OPEN_BRACKET = 1;
+
 
     public static boolean validateContent(String content) {
         List<Integer> openBracketsPositions = BracketsFinder.getBracketPositions(content, LIST_OPEN_BRACKET);
@@ -24,19 +30,28 @@ public class Validator {
             return false;
         }
 
-        int listAuthorsContentBeginning = openBracketsPositions.get(0) + 1;
-        int listAuthorsContentEnding = closeBracketsPositions.get(0);
+        int listAuthorsContentBeginning = openBracketsPositions.get(ORDER_OF_AUTHORS_BLOCK) + OFFSET_FROM_OPEN_BRACKET;
+        int listAuthorsContentEnding = closeBracketsPositions.get(ORDER_OF_AUTHORS_BLOCK);
         String listAuthorsContent = content.substring(listAuthorsContentBeginning, listAuthorsContentEnding);
 
-        if (!AuthorsValidator.validateAuthors(listAuthorsContent)) {
+        if (!AuthorsValidator.validate(listAuthorsContent)) {
             return false;
         }
 
-        int listBooksContentBeginning = openBracketsPositions.get(1) + 1;
-        int listBooksContentEnding = closeBracketsPositions.get(1);
+        int listBooksContentBeginning = openBracketsPositions.get(ORDER_OF_BOOKS_BLOCK) + OFFSET_FROM_OPEN_BRACKET;
+        int listBooksContentEnding = closeBracketsPositions.get(ORDER_OF_BOOKS_BLOCK);
         String listBooksContent = content.substring(listBooksContentBeginning, listBooksContentEnding);
 
-        if (!BooksValidator.validateBooks(listBooksContent, listAuthorsContent)) {
+        if (!BooksValidator.validate(listBooksContent, listAuthorsContent)) {
+            return false;
+
+        }
+
+        int listPublishersContentBeginning = openBracketsPositions.get(ORDER_OF_PUBLISHERS_BLOCK) + OFFSET_FROM_OPEN_BRACKET;
+        int listPublishersContentEnding = closeBracketsPositions.get(ORDER_OF_PUBLISHERS_BLOCK);
+        String listPublishersContent = content.substring(listPublishersContentBeginning, listPublishersContentEnding);
+
+        if (!PublishersValidator.validate(listPublishersContent, listBooksContent)) {
             return false;
 
         }

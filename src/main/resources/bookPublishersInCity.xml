@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<Publishers>
+    <Publisher>
+        <name>Asgard</name>
+        <Books>
+            <Book>
+                <title>Innovative economy</title>
+                <publicationDate>23.12.2013</publicationDate>
+                <Authors>
+                    <Author>
+                        <name>Karova Anna</name>
+                        <dayOfBirthDay>12.09.1968</dayOfBirthDay>
+                        <dayOfDeath>-</dayOfDeath>
+                        <sex>FEMALE</sex>
+                    </Author>
+                </Authors>
+            </Book>
+            <Book>
+                <title>Health Generation</title>
+                <publicationDate>11.05.2016</publicationDate>
+                <Authors>
+                    <Author>
+                        <name>Vasilyeva Victoria</name>
+                        <dayOfBirhDay>23.04.1975</dayOfBirhDay>
+                        <dayOfDeath>-</dayOfDeath>
+                        <sex>FEMALE</sex>
+                    </Author>
+                    <Author>
+                        <name>Panarina Julia</name>
+                        <dayOfBirhDay>21.07.1974</dayOfBirhDay>
+                        <dayOfDeath>-</dayOfDeath>
+                        <sex>FEMALE</sex>
+                    </Author>
+                </Authors>
+            </Book>
+            <Book>
+                <title>Fundamentals of nutritional science</title>
+                <publicationDate>06.01.2016</publicationDate>
+                <Authors>
+                    <Author>
+                        <name>Gorbachev Vladimir</name>
+                        <dayOfBirthDay>11.02.1983</dayOfBirthDay>
+                        <dayOfDeath>-</dayOfDeath>\
+                        <sex>MALE</sex>
+                    </Author>
+                    <Author>
+                        <name>Sazonova Olga</name>
+                        <dayOfBirthDay>11.02.1969</dayOfBirthDay>
+                        <dayOfDeath>-</dayOfDeath>\
+                        <sex>FEMALE</sex>
+                    </Author>
+                </Authors>
+            </Book>
+        </Books>
+    </Publisher>
+
+    <Publisher>
+        <name>Agni</name>
+        <Books>
+            <Book>
+                <title>Diaries</title>
+                <publicationDate>22.04.2008</publicationDate>
+                <Authors>
+                    <Author>
+                        <name>Nikola tesla</name>
+                        <dayOfBirthDay>10.07.1856</dayOfBirthDay>
+                        <dayOfDeath>07.01.1943</dayOfDeath>
+                        <sex>MALE</sex>
+                    </Author>
+                </Authors>
+            </Book>
+            <Book>
+                <title>Diaries</title>
+                <publicationDate>22.04.2008</publicationDate>
+                <Authors>
+                    <Author>
+                        <name>Nikola tesla</name>
+                        <dayOfBirthDay>10.07.1856</dayOfBirthDay>
+                        <dayOfDeath>07.01.1943</dayOfDeath>
+                        <sex>MALE</sex>
+                    </Author>
+                </Authors>
+            </Book>
+            <Book>
+                <title>Notes on Mongolia</title>
+                <publicationDate>02.05.2010</publicationDate>
+                <Authors>
+                    <Author>
+                        <name>Bichurin Evgeny</name>
+                        <dayOfBirthDay>12.03.1971</dayOfBirthDay>
+                        <dayOfDeath>-</dayOfDeath>
+                        <sex>male</sex>
+                    </Author>
+                </Authors>
+            </Book>
+        </Books>
+    </Publisher>
+</Publishers>

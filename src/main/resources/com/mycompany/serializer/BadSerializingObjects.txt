@@ -1,0 +1,42 @@
+Authors[
+{
+  Id: 1
+  Name: Egor
+  DayOfBirthday: 21.12.1974
+  DayOfDeath: -
+  Sex: MALE
+}
+{
+  Id: 2
+  Name: John
+  DayOfBirthday: 10.12.1923
+  DayOfDeath: 05.06.1984
+  Sex: MALE
+}
+]
+
+Books[
+{
+  Id: 1
+  Title: DayOfz
+  PublicationDate: 15.02.2000
+  AuthorId: 1 5
+}
+{
+  Id: 2
+  Title: SayHello
+  PublicationDate: 30.06.2004
+  AuthorId:
+}
+]
+
+Publishers[
+{
+  Name: Paragon
+  BooksID:
+}
+{
+  Name: SweetHome
+  BooksID:
+}
+]

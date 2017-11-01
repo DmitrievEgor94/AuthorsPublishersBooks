@@ -8,7 +8,7 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Scanner;
 
-class AuthorsValidator {
+public class AuthorsValidator {
 
     private static final String CLASS_OPEN_BRACKET = "{";
     private static final String CLASS_CLOSE_BRACKET = "}";
@@ -18,9 +18,11 @@ class AuthorsValidator {
     private static final int NUMBER_OF_NEEDED_TOKENS = 2;
     private static final int POSITION_OF_VALUE_TOKEN = 1;
 
+    private static final int OFFSET_FROM_OPEN_BRACKET = 1;
+
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
-    static boolean validateAuthors(String content) {
+    public static boolean validate(String content) {
         List<Integer> openBracketPositions = BracketsFinder.getBracketPositions(content, CLASS_OPEN_BRACKET);
         List<Integer> closeBracketPositions = BracketsFinder.getBracketPositions(content, CLASS_CLOSE_BRACKET);
 
@@ -28,7 +30,7 @@ class AuthorsValidator {
             int openBracketPosition = openBracketPositions.get(i);
             int closeBracketPosition = closeBracketPositions.get(i);
 
-            String contentOfClass = content.substring(openBracketPosition + 1, closeBracketPosition);
+            String contentOfClass = content.substring(openBracketPosition + OFFSET_FROM_OPEN_BRACKET, closeBracketPosition);
 
             Scanner scanner = new Scanner(contentOfClass);
             scanner.nextLine();

@@ -11,6 +11,8 @@ class GetterAvailableIdList {
     private static final String CLASS_OPEN_BRACKET = "{";
     private static final String CLASS_CLOSE_BRACKET = "}";
 
+    private static final int OFFSET_FROM_OPEN_BRACKET = 1;
+
     static List<Integer> getIdList(String content) {
         List<Integer> idList = new ArrayList<>();
 
@@ -21,7 +23,7 @@ class GetterAvailableIdList {
             int openBracketPosition = openBracketPositions.get(i);
             int closeBracketPosition = closeBracketPositions.get(i);
 
-            String contentOfClass = content.substring(openBracketPosition + 1, closeBracketPosition);
+            String contentOfClass = content.substring(openBracketPosition + OFFSET_FROM_OPEN_BRACKET, closeBracketPosition);
 
             Scanner scanner = new Scanner(contentOfClass);
 
