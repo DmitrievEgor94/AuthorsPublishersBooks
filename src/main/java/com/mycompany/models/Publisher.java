@@ -1,6 +1,7 @@
 package com.mycompany.models;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Publisher {
     private String name;
@@ -31,6 +32,11 @@ public class Publisher {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(name, books);
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (obj == this) return true;
 
@@ -40,7 +46,8 @@ public class Publisher {
 
         Publisher publisher = (Publisher) obj;
 
-        return this.name.equals(publisher.name) && this.books.equals(publisher.books);
+        return ((this.name == null) ? (publisher.name == null) : (this.name.equals(publisher.name)))
+                && ((this.books == null) ? (publisher.books == null) : (this.books.equals(publisher.books)));
 
     }
 }

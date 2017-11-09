@@ -3,6 +3,7 @@ package com.mycompany.models;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class Book {
 
@@ -49,6 +50,11 @@ public class Book {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(title, publicationDate, authors);
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (obj == this) return true;
 
@@ -58,9 +64,9 @@ public class Book {
 
         Book book = (Book) obj;
 
-        if (!this.title.equals(book.title)) return false;
-
-        return this.publicationDate.equals(book.publicationDate) && this.authors.equals(book.authors);
+        return ((this.title == null) ? (book.title == null) : (this.title.equals(book.title)))
+                && ((this.publicationDate == null) ? (book.publicationDate == null) : (this.publicationDate.equals(book.publicationDate)))
+                && ((this.authors == null) ? (book.authors == null) : (this.authors.equals(book.authors)));
 
     }
 }
