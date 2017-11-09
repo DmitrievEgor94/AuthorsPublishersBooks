@@ -11,5 +11,5 @@ import java.util.List;
 public interface Serializer {
     void serializeObjects(List<Author> authors, List<Book> books, List<Publisher> publishers, String fileWithObjects) throws IOException;
 
-    OriginalModelsContainer deserializeObject(String fileWithObjects) throws IOException, ClassNotFoundException;
+    OriginalModelsContainer deserializeObject(String fileWithObjects) throws IOException;
 }

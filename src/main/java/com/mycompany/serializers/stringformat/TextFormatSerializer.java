@@ -68,11 +68,14 @@ public class TextFormatSerializer implements Serializer {
 
 
     @Override
-    public OriginalModelsContainer deserializeObject(String fileWithObjects) throws IOException, ClassNotFoundException {
+    public OriginalModelsContainer deserializeObject(String fileWithObjects) throws IOException {
         try (Scanner scanner = new Scanner(new File(fileWithObjects))) {
             String content = scanner.useDelimiter("\\Z").next();
 
-            if (!Validator.validateContent(content)) throw new ClassNotFoundException("Invalid data in file!");
+            if (!Validator.validateContent(content)) {
+                System.out.println("File for string deserialization is not valid!");
+                return null;
+            }
 
             List<Integer> openBracketsPositions = BracketsFinder.getBracketPositions(content, LIST_OPEN_BRACKET);
             List<Integer> closeBracketsPositions = BracketsFinder.getBracketPositions(content, LIST_CLOSE_BRACKET);
