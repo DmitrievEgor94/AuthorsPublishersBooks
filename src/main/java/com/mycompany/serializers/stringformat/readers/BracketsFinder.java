@@ -1,17 +1,28 @@
 package com.mycompany.serializers.stringformat.readers;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class BracketsFinder {
-    public static List<Integer> getBracketPositions(String content, String bracket) {
-        List<Integer> openBracketPositions = new ArrayList<>();
+    public static List<Integer> getBracketPositions(File file, String bracket) throws FileNotFoundException {
+        List<Integer> indexBracketPositions = new ArrayList<>();
 
-        for (int index = content.indexOf(bracket); index >= 0;
-             index = content.indexOf(bracket, index + 1)) {
-            openBracketPositions.add(index);
+        try (Scanner scanner = new Scanner(file)) {
+
+            while (scanner.hasNext()) {
+                String line = scanner.nextLine();
+
+                int index = line.indexOf(bracket);
+
+                if (index != -1) {
+                    indexBracketPositions.add(index);
+                }
+            }
         }
 
-        return openBracketPositions;
+        return indexBracketPositions;
     }
 }

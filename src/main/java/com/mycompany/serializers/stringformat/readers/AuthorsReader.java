@@ -1,8 +1,10 @@
 package com.mycompany.serializers.stringformat.readers;
 
-import com.mycompany.models.Author;
 import com.mycompany.entities.AuthorEntity;
+import com.mycompany.models.Author;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -10,8 +12,11 @@ import java.util.List;
 import java.util.Scanner;
 
 public class AuthorsReader {
+
     private static final String CLASS_OPEN_BRACKET = "{";
-    private static final String CLASS_CLOSE_BRACKET = "}";
+
+    private static final String LIST_CLOSE_BRACKET = "]";
+
     static private final String ABSENT_DEATH_DATE = "-";
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
@@ -20,46 +25,63 @@ public class AuthorsReader {
 
     private static final int POSITION_OF_VALUE_TOKEN = 1;
 
-    public static List<AuthorEntity> readAuthors(String content) {
+    private static final String AUTHOR_BLOCK_NAME = "Authors";
+
+    public List<AuthorEntity> read(File file) throws FileNotFoundException {
+
         List<AuthorEntity> authorEntities = new ArrayList<>();
 
-        List<Integer> openBracketPositions = BracketsFinder.getBracketPositions(content, CLASS_OPEN_BRACKET);
-        List<Integer> closeBracketPositions = BracketsFinder.getBracketPositions(content, CLASS_CLOSE_BRACKET);
+        try (Scanner scanner = new Scanner(file)) {
 
-        for (int i = 0; i < openBracketPositions.size(); i++) {
-            int openBracketPosition = openBracketPositions.get(i);
-            int closeBracketPosition = closeBracketPositions.get(i);
+            while (scanner.hasNext()) {
+                String line = scanner.nextLine();
 
-            String contentOfClass = content.substring(openBracketPosition + 1, closeBracketPosition);
-
-            Scanner scanner = new Scanner(contentOfClass);
-
-            scanner.nextLine();
-
-            String idAndValue = scanner.nextLine();
-            int id = Integer.parseInt(idAndValue.split(DELIMITER_BETWEEN_FIELD_VALUE)[POSITION_OF_VALUE_TOKEN].trim());
-
-            String nameAndValue = scanner.nextLine();
-            String name = nameAndValue.split(DELIMITER_BETWEEN_FIELD_VALUE)[POSITION_OF_VALUE_TOKEN].trim();
-
-            String dayOfBirthdayAndValue = scanner.nextLine();
-            String dayOfBirthdayString = dayOfBirthdayAndValue.split(DELIMITER_BETWEEN_FIELD_VALUE)[POSITION_OF_VALUE_TOKEN].trim();
-            LocalDate dayOfBirthday = LocalDate.parse(dayOfBirthdayString, FORMATTER);
-
-            String dayOfDeathAndValue = scanner.nextLine();
-            LocalDate dayOfDeath = null;
-            String dayOfDeathString = dayOfDeathAndValue.split(DELIMITER_BETWEEN_FIELD_VALUE)[POSITION_OF_VALUE_TOKEN].trim();
-            if (!dayOfDeathString.equals(ABSENT_DEATH_DATE)) {
-                dayOfDeath = LocalDate.parse(dayOfDeathString, FORMATTER);
+                if (line.contains(AUTHOR_BLOCK_NAME)) {
+                    break;
+                }
             }
 
-            String sexAndValue = scanner.nextLine();
-            String sexString = sexAndValue.split(DELIMITER_BETWEEN_FIELD_VALUE)[1].trim();
-            Author.Sex sex = Author.Sex.valueOf(sexString);
+            while (scanner.hasNext()) {
+                String line = scanner.nextLine();
 
-            authorEntities.add(new AuthorEntity(id, name, dayOfBirthday, dayOfDeath, sex));
+                if (line.contains(CLASS_OPEN_BRACKET)) {
+                    authorEntities.add(getAuthorEntity(scanner));
+                }
+
+                if (line.contains(LIST_CLOSE_BRACKET)) {
+                    break;
+                }
+
+            }
         }
 
         return authorEntities;
+    }
+
+    private AuthorEntity getAuthorEntity(Scanner scanner) {
+
+        String idAndValue = scanner.nextLine();
+        int id = Integer.parseInt(idAndValue.split(DELIMITER_BETWEEN_FIELD_VALUE)[POSITION_OF_VALUE_TOKEN].trim());
+
+        String nameAndValue = scanner.nextLine();
+        String name = nameAndValue.split(DELIMITER_BETWEEN_FIELD_VALUE)[POSITION_OF_VALUE_TOKEN].trim();
+
+        String dayOfBirthdayAndValue = scanner.nextLine();
+        String dayOfBirthdayString = dayOfBirthdayAndValue.split(DELIMITER_BETWEEN_FIELD_VALUE)[POSITION_OF_VALUE_TOKEN].trim();
+        LocalDate dayOfBirthday = LocalDate.parse(dayOfBirthdayString, FORMATTER);
+
+        String dayOfDeathAndValue = scanner.nextLine();
+        LocalDate dayOfDeath = null;
+        String dayOfDeathString = dayOfDeathAndValue.split(DELIMITER_BETWEEN_FIELD_VALUE)[POSITION_OF_VALUE_TOKEN].trim();
+        if (!dayOfDeathString.equals(ABSENT_DEATH_DATE)) {
+            dayOfDeath = LocalDate.parse(dayOfDeathString, FORMATTER);
+        }
+
+        String sexAndValue = scanner.nextLine();
+        String sexString = sexAndValue.split(DELIMITER_BETWEEN_FIELD_VALUE)[1].trim();
+        Author.Sex sex = Author.Sex.valueOf(sexString);
+
+        return new AuthorEntity(id, name, dayOfBirthday, dayOfDeath, sex);
+
     }
 }

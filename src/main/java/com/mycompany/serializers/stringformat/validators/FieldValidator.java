@@ -1,5 +1,7 @@
 package com.mycompany.serializers.stringformat.validators;
 
+import com.mycompany.models.Author;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -11,9 +13,12 @@ class FieldValidator {
     private static final int NUMBER_OF_NEEDED_TOKENS = 2;
     private static final int POSITION_OF_VALUE_TOKEN = 1;
 
+    static private final String ABSENT_DEATH_DATE = "-";
+
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
-    static boolean validateId(String idAndValue) {
+    boolean validateId(String idAndValue) {
+
         String[] tokens = idAndValue.split(DELIMITER_BETWEEN_FIELD_VALUE);
 
         if (tokens.length != NUMBER_OF_NEEDED_TOKENS) {
@@ -29,7 +34,8 @@ class FieldValidator {
         return true;
     }
 
-    static boolean validateDate(String dateFieldAndValue) {
+    boolean validateDate(String dateFieldAndValue) {
+
         String[] tokens = dateFieldAndValue.split(DELIMITER_BETWEEN_FIELD_VALUE);
 
         if (tokens.length != NUMBER_OF_NEEDED_TOKENS) return false;
@@ -45,14 +51,35 @@ class FieldValidator {
         return true;
     }
 
+    boolean validateDayOfDeath(String dayAndValue) {
 
-    static boolean checkNumberOfTokens(String string) {
+        String[] tokens = dayAndValue.split(DELIMITER_BETWEEN_FIELD_VALUE);
+
+        if (tokens.length != NUMBER_OF_NEEDED_TOKENS) return false;
+
+        String date = tokens[POSITION_OF_VALUE_TOKEN].trim();
+
+        if (date.equals(ABSENT_DEATH_DATE)) return true;
+
+        try {
+            LocalDate.parse(date, FORMATTER);
+        } catch (DateTimeParseException e) {
+            return false;
+        }
+
+        return true;
+    }
+
+
+    boolean checkNumberOfTokens(String string) {
+
         String[] tokens = string.split(DELIMITER_BETWEEN_FIELD_VALUE);
 
         return tokens.length == NUMBER_OF_NEEDED_TOKENS;
     }
 
-    static boolean validateListOfId(String idAndValues, List<Integer> availableId) {
+    boolean validateListOfId(String idAndValues, List<Integer> availableId) {
+
         String[] tokens = idAndValues.split(DELIMITER_BETWEEN_FIELD_VALUE);
 
         if (tokens.length < NUMBER_OF_NEEDED_TOKENS) return false;
@@ -65,6 +92,23 @@ class FieldValidator {
             if (!availableId.contains(id)) {
                 return false;
             }
+        }
+
+        return true;
+    }
+
+    boolean checkSexOfAuthor(String sexAndValue) {
+
+        String[] tokens = sexAndValue.split(DELIMITER_BETWEEN_FIELD_VALUE);
+
+        if (tokens.length != 2) {
+            return false;
+        }
+
+        try {
+            Author.Sex.valueOf(tokens[POSITION_OF_VALUE_TOKEN].trim());
+        } catch (IllegalArgumentException e) {
+            return false;
         }
 
         return true;

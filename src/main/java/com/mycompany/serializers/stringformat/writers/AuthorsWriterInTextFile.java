@@ -10,6 +10,7 @@ import java.util.List;
 public class AuthorsWriterInTextFile {
     private static final String LIST_OPEN_BRACKET = "[";
     private static final String LIST_CLOSE_BRACKET = "]";
+
     private static final String CLASS_OPEN_BRACKET = "{";
     private static final String CLASS_CLOSE_BRACKET = "}";
 
@@ -60,7 +61,7 @@ public class AuthorsWriterInTextFile {
 
     private static String dayOfDeathFieldAndValue(String field, LocalDate dayOfDeath) {
         if (dayOfDeath == null)
-            return String.format("  %s: %s", field, ABSENT_DEATH_DATE);
-        else return String.format("  %s: %s", field, dayOfDeath.format(FORMATTER));
+            return fieldAndValue(field, ABSENT_DEATH_DATE);
+        else return fieldAndValue(field, dayOfDeath.format(FORMATTER));
     }
 }

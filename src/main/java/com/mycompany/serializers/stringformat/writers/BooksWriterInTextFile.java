@@ -9,6 +9,7 @@ import java.util.List;
 public class BooksWriterInTextFile {
     private static final String LIST_OPEN_BRACKET = "[";
     private static final String LIST_CLOSE_BRACKET = "]";
+
     private static final String CLASS_OPEN_BRACKET = "{";
     private static final String CLASS_CLOSE_BRACKET = "}";
 

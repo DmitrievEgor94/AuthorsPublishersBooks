@@ -1,9 +1,5 @@
 package com.mycompany.serializers.stringformat;
 
-import com.mycompany.models.Author;
-import com.mycompany.models.Book;
-import com.mycompany.models.OriginalModelsContainer;
-import com.mycompany.models.Publisher;
 import com.mycompany.entities.AuthorEntity;
 import com.mycompany.entities.BookEntity;
 import com.mycompany.entities.PublisherEntity;
@@ -13,10 +9,12 @@ import com.mycompany.entities.creators.PublisherEntitiesCreator;
 import com.mycompany.entities.restorators.AuthorsRestorator;
 import com.mycompany.entities.restorators.BooksRestorator;
 import com.mycompany.entities.restorators.PublishersRestorator;
+import com.mycompany.models.Author;
+import com.mycompany.models.Book;
+import com.mycompany.models.Publisher;
 import com.mycompany.serializers.Serializer;
 import com.mycompany.serializers.stringformat.readers.AuthorsReader;
 import com.mycompany.serializers.stringformat.readers.BooksReader;
-import com.mycompany.serializers.stringformat.readers.BracketsFinder;
 import com.mycompany.serializers.stringformat.readers.PublishersReader;
 import com.mycompany.serializers.stringformat.validators.Validator;
 import com.mycompany.serializers.stringformat.writers.AuthorsWriterInTextFile;
@@ -27,25 +25,30 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Collection;
 import java.util.List;
-import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class TextFormatSerializer implements Serializer {
 
     static private final String AUTHOR_MODEL = "Authors";
     static private final String BOOK_MODEL = "Books";
     static private final String PUBLISHER_MODEL = "Publishers";
-    private static final String LIST_OPEN_BRACKET = "[";
-    private static final String LIST_CLOSE_BRACKET = "]";
 
-    private static final int ORDER_OF_AUTHORS_BLOCK = 0;
-    private static final int ORDER_OF_BOOKS_BLOCK = 1;
-    private static final int ORDER_OF_PUBLISHERS_BLOCK = 2;
-
-    private static final int OFFSET_FROM_OPEN_BRACKET = 1;
-
-    public void serializeObjects(List<Author> authors, List<Book> books, List<Publisher> publishers, String fileWithObjects) throws FileNotFoundException {
+    public void serializeObjects(List<Publisher> publishers, String fileWithObjects) throws FileNotFoundException {
         try (PrintWriter fileWriter = new PrintWriter(new File(fileWithObjects))) {
+
+            List<Book> books = publishers.stream()
+                    .map(Publisher::getBooks)
+                    .flatMap(Collection::stream)
+                    .distinct()
+                    .collect(Collectors.toList());
+
+            List<Author> authors = books.stream()
+                    .map(Book::getAuthors)
+                    .flatMap(Collection::stream)
+                    .distinct()
+                    .collect(Collectors.toList());
 
             List<AuthorEntity> authorEntities = AuthorEntitiesCreator.getListAuthorEntities(authors);
             List<BookEntity> bookEntities = BookEntitiesCreator.getListBookEntities(books, authorEntities);
@@ -68,39 +71,27 @@ public class TextFormatSerializer implements Serializer {
 
 
     @Override
-    public OriginalModelsContainer deserializeObject(String fileWithObjects) throws IOException {
-        try (Scanner scanner = new Scanner(new File(fileWithObjects))) {
-            String content = scanner.useDelimiter("\\Z").next();
+    public List<Publisher> deserializeObject(String fileWithObjects) throws IOException {
 
-            if (!Validator.validateContent(content)) {
-                System.out.println("File for string deserialization is not valid!");
-                return null;
-            }
+        File file = new File(fileWithObjects);
 
-            List<Integer> openBracketsPositions = BracketsFinder.getBracketPositions(content, LIST_OPEN_BRACKET);
-            List<Integer> closeBracketsPositions = BracketsFinder.getBracketPositions(content, LIST_CLOSE_BRACKET);
-
-
-            int listAuthorsContentBeginning = openBracketsPositions.get(ORDER_OF_AUTHORS_BLOCK) + OFFSET_FROM_OPEN_BRACKET;
-            int listAuthorsContentEnding = closeBracketsPositions.get(ORDER_OF_AUTHORS_BLOCK);
-            String listAuthorsContent = content.substring(listAuthorsContentBeginning, listAuthorsContentEnding);
-            List<AuthorEntity> authorsEntities = AuthorsReader.readAuthors(listAuthorsContent);
-            List<Author> authors = AuthorsRestorator.getListOfAuthors(authorsEntities);
-
-            int listBooksContentBeginning = openBracketsPositions.get(ORDER_OF_BOOKS_BLOCK) + OFFSET_FROM_OPEN_BRACKET;
-            int listBooksContentEnding = closeBracketsPositions.get(ORDER_OF_BOOKS_BLOCK);
-            String listBooksContent = content.substring(listBooksContentBeginning, listBooksContentEnding);
-            List<BookEntity> bookEntities = BooksReader.readBooks(listBooksContent);
-            List<Book> books = BooksRestorator.getListOfBooks(bookEntities, authors, authorsEntities);
-
-            int listPublishersContentBeginning = openBracketsPositions.get(ORDER_OF_PUBLISHERS_BLOCK) + OFFSET_FROM_OPEN_BRACKET;
-            int listPublishersContentEnding = closeBracketsPositions.get(ORDER_OF_PUBLISHERS_BLOCK);
-            String listPublishersContent = content.substring(listPublishersContentBeginning, listPublishersContentEnding);
-            List<PublisherEntity> publisherEntities = PublishersReader.readBooks(listPublishersContent);
-            List<Publisher> publishers = PublishersRestorator.getListOfPublishers(publisherEntities, bookEntities, books);
-
-            return new OriginalModelsContainer(authors, books, publishers);
+        if (!Validator.validateContent(file)) {
+            System.out.println("Error in " + fileWithObjects);
+            return null;
         }
+
+        AuthorsReader authorsReader = new AuthorsReader();
+        List<AuthorEntity> authorsEntities = authorsReader.read(file);
+        List<Author> authors = AuthorsRestorator.getListOfAuthors(authorsEntities);
+
+        BooksReader booksReader = new BooksReader();
+        List<BookEntity> bookEntities = booksReader.read(file);
+        List<Book> books = BooksRestorator.getListOfBooks(bookEntities, authors, authorsEntities);
+
+        PublishersReader publishersReader = new PublishersReader();
+        List<PublisherEntity> publisherEntities = publishersReader.read(file);
+
+        return PublishersRestorator.getListOfPublishers(publisherEntities, bookEntities, books);
     }
 
 }

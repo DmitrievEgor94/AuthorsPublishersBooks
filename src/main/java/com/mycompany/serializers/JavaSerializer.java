@@ -11,20 +11,33 @@ import com.mycompany.entities.restorators.BooksRestorator;
 import com.mycompany.entities.restorators.PublishersRestorator;
 import com.mycompany.models.Author;
 import com.mycompany.models.Book;
-import com.mycompany.models.OriginalModelsContainer;
 import com.mycompany.models.Publisher;
 
 import java.io.*;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class JavaSerializer implements Serializer {
 
     @Override
-    public void serializeObjects(List<Author> authors, List<Book> books, List<Publisher> publishers, String fileWithObjects) throws IOException {
+    public void serializeObjects(List<Publisher> publishers, String fileWithObjects) throws IOException {
         ObjectOutputStream out =
                 new ObjectOutputStream(
                         new FileOutputStream(
                                 new File(fileWithObjects)));
+
+        List<Book> books = publishers.stream()
+                .map(Publisher::getBooks)
+                .flatMap(Collection::stream)
+                .distinct()
+                .collect(Collectors.toList());
+
+        List<Author> authors = books.stream()
+                .map(Book::getAuthors)
+                .flatMap(Collection::stream)
+                .distinct()
+                .collect(Collectors.toList());
 
         List<AuthorEntity> authorEntities = AuthorEntitiesCreator.getListAuthorEntities(authors);
         List<BookEntity> bookEntities = BookEntitiesCreator.getListBookEntities(books, authorEntities);
@@ -39,7 +52,7 @@ public class JavaSerializer implements Serializer {
     }
 
     @Override
-    public OriginalModelsContainer deserializeObject(String fileWithObjects) throws IOException {
+    public List<Publisher> deserializeObject(String fileWithObjects) throws IOException {
 
         ObjectInputStream in = null;
 
@@ -55,13 +68,12 @@ public class JavaSerializer implements Serializer {
 
             List<Author> authors = AuthorsRestorator.getListOfAuthors(authorEntities);
             List<Book> books = BooksRestorator.getListOfBooks(bookEntities, authors, authorEntities);
-            List<Publisher> publishers = PublishersRestorator.getListOfPublishers(publisherEntities, bookEntities, books);
 
-            return new OriginalModelsContainer(authors, books, publishers);
+            return PublishersRestorator.getListOfPublishers(publisherEntities, bookEntities, books);
         } catch (ClassNotFoundException e) {
             System.out.println(e);
         } finally {
-            if (in != null){
+            if (in != null) {
                 in.close();
             }
         }

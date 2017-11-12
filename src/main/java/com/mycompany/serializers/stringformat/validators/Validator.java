@@ -2,8 +2,11 @@ package com.mycompany.serializers.stringformat.validators;
 
 import com.mycompany.serializers.stringformat.readers.BracketsFinder;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.Stack;
 
 public class Validator {
@@ -12,53 +15,37 @@ public class Validator {
     private static final String CLASS_OPEN_BRACKET = "{";
     private static final String CLASS_CLOSE_BRACKET = "}";
 
-    private static final int ORDER_OF_AUTHORS_BLOCK = 0;
-    private static final int ORDER_OF_BOOKS_BLOCK = 1;
-    private static final int ORDER_OF_PUBLISHERS_BLOCK = 2;
+    private static final int CORRECT_NUMBER_OF_BRACKETS = 3;
 
-    private static final int OFFSET_FROM_OPEN_BRACKET = 1;
+    public static boolean validateContent(File file) throws FileNotFoundException {
 
-
-    public static boolean validateContent(String content) {
-        List<Integer> openBracketsPositions = BracketsFinder.getBracketPositions(content, LIST_OPEN_BRACKET);
-        List<Integer> closeBracketsPositions = BracketsFinder.getBracketPositions(content, LIST_CLOSE_BRACKET);
-        if (openBracketsPositions.size() != closeBracketsPositions.size() || closeBracketsPositions.size() != 3) {
+        if (!areBracketsValid(file)) {
+            System.out.println("Brackets are not valid in file!");
             return false;
         }
 
-        if (!areBracketsValid(content)) {
+        ObjectsValidator objectsValidator = new AuthorsValidator();
+
+        if (!objectsValidator.areObjectsValid(file)) {
             return false;
         }
 
-        int listAuthorsContentBeginning = openBracketsPositions.get(ORDER_OF_AUTHORS_BLOCK) + OFFSET_FROM_OPEN_BRACKET;
-        int listAuthorsContentEnding = closeBracketsPositions.get(ORDER_OF_AUTHORS_BLOCK);
-        String listAuthorsContent = content.substring(listAuthorsContentBeginning, listAuthorsContentEnding);
+        objectsValidator = new BooksValidator();
 
-        if (!AuthorsValidator.validate(listAuthorsContent)) {
-            return false;
-        }
-
-        int listBooksContentBeginning = openBracketsPositions.get(ORDER_OF_BOOKS_BLOCK) + OFFSET_FROM_OPEN_BRACKET;
-        int listBooksContentEnding = closeBracketsPositions.get(ORDER_OF_BOOKS_BLOCK);
-        String listBooksContent = content.substring(listBooksContentBeginning, listBooksContentEnding);
-
-        if (!BooksValidator.validate(listBooksContent, listAuthorsContent)) {
+        if (!objectsValidator.areObjectsValid(file)) {
             return false;
 
         }
 
-        int listPublishersContentBeginning = openBracketsPositions.get(ORDER_OF_PUBLISHERS_BLOCK) + OFFSET_FROM_OPEN_BRACKET;
-        int listPublishersContentEnding = closeBracketsPositions.get(ORDER_OF_PUBLISHERS_BLOCK);
-        String listPublishersContent = content.substring(listPublishersContentBeginning, listPublishersContentEnding);
-
-        return PublishersValidator.validate(listPublishersContent, listBooksContent);
+        objectsValidator = new PublishersValidator();
+        return objectsValidator.areObjectsValid(file);
     }
 
-    private static boolean areBracketsValid(String content) {
-        List<Integer> openBracketsPositions = BracketsFinder.getBracketPositions(content, LIST_OPEN_BRACKET);
-        List<Integer> closeBracketsPositions = BracketsFinder.getBracketPositions(content, LIST_CLOSE_BRACKET);
+    private static boolean areBracketsValid(File file) throws FileNotFoundException {
+        List<Integer> openBracketsPositions = BracketsFinder.getBracketPositions(file, LIST_OPEN_BRACKET);
+        List<Integer> closeBracketsPositions = BracketsFinder.getBracketPositions(file, LIST_CLOSE_BRACKET);
 
-        if (openBracketsPositions.size() != closeBracketsPositions.size() || closeBracketsPositions.size() != 3) {
+        if (openBracketsPositions.size() != closeBracketsPositions.size() || closeBracketsPositions.size() != CORRECT_NUMBER_OF_BRACKETS) {
             return false;
         }
 
@@ -73,15 +60,22 @@ public class Validator {
 
         Stack<Character> stack = new Stack<>();
 
-        for (int i = 0; i < content.length(); i++) {
-            char currentCharacter = content.charAt(i);
+        try (Scanner scanner = new Scanner(file)) {
+            while (scanner.hasNext()) {
 
-            if (openBrackets.contains(currentCharacter))
-                stack.push(currentCharacter);
+                String line = scanner.nextLine();
 
-            if (closeBrackets.contains(currentCharacter)) {
-                char openBracket = stack.pop();
-                if (openBracket != openBrackets.get(closeBrackets.indexOf(currentCharacter))) return false;
+                for (int i = 0; i < line.length(); i++) {
+                    char currentCharacter = line.charAt(i);
+
+                    if (openBrackets.contains(currentCharacter))
+                        stack.push(currentCharacter);
+
+                    if (closeBrackets.contains(currentCharacter)) {
+                        char openBracket = stack.pop();
+                        if (openBracket != openBrackets.get(closeBrackets.indexOf(currentCharacter))) return false;
+                    }
+                }
             }
         }
 

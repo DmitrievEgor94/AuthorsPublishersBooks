@@ -1,42 +1,83 @@
 package com.mycompany.serializers.stringformat.validators;
 
-import com.mycompany.serializers.stringformat.readers.BracketsFinder;
-
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Scanner;
 
-class PublishersValidator {
+class PublishersValidator implements ObjectsValidator {
 
-    private static final String CLASS_OPEN_BRACKET = "{";
-    private static final String CLASS_CLOSE_BRACKET = "}";
+    private static final String BOOKS_BLOCK_NAME = "Books";
 
-    private static final int OFFSET_FROM_OPEN_BRACKET = 1;
+    private static final String PUBLISHERS_BLOCK_NAME = "Publishers";
 
-    static boolean validate(String publishersContent, String booksContent) {
+    @Override
+    public boolean areObjectsValid(File file) throws FileNotFoundException {
 
-        List<Integer> openBracketPositions = BracketsFinder.getBracketPositions(publishersContent, CLASS_OPEN_BRACKET);
-        List<Integer> closeBracketPositions = BracketsFinder.getBracketPositions(publishersContent, CLASS_CLOSE_BRACKET);
+        try (Scanner scanner = new Scanner(file)) {
 
-        List<Integer> booksAvailableId = GetterAvailableIdList.getIdList(booksContent);
+            List<Integer> booksId = null;
 
-        for (int i = 0; i < openBracketPositions.size(); i++) {
-            int openBracketPosition = openBracketPositions.get(i);
-            int closeBracketPosition = closeBracketPositions.get(i);
+            while (scanner.hasNext()) {
+                String line = scanner.nextLine();
 
-            String contentOfClass = publishersContent.substring(openBracketPosition + OFFSET_FROM_OPEN_BRACKET, closeBracketPosition);
+                if (line.contains(BOOKS_BLOCK_NAME)) {
+                    GetterAvailableIdList getterAvailableIdList = new GetterAvailableIdList();
 
-            Scanner scanner = new Scanner(contentOfClass);
-            scanner.nextLine();
+                    booksId = getterAvailableIdList.getIdList(scanner);
 
-            String nameAndValue = scanner.nextLine();
-            if (!FieldValidator.checkNumberOfTokens(nameAndValue)) {
-                return false;
+                    break;
+                }
             }
 
-            String booksIdAndValues = scanner.nextLine();
-            if (!FieldValidator.validateListOfId(booksIdAndValues, booksAvailableId)) {
-                return false;
+            if (booksId != null) {
+                while (scanner.hasNext()) {
+                    String line = scanner.nextLine();
+
+                    if (line.contains(PUBLISHERS_BLOCK_NAME)) {
+                        break;
+                    }
+
+                }
             }
+
+            return scanner.hasNext() && validatePublishers(scanner, booksId);
+        }
+    }
+
+    private boolean validatePublishers(Scanner scanner, List<Integer> booksId) {
+        while (scanner.hasNext()) {
+
+            String line = scanner.nextLine();
+
+            if (line.contains(LIST_CLOSE_BRACKET)) {
+                return true;
+            }
+
+            if (line.contains(CLASS_OPEN_BRACKET)) {
+                if (!validatePublisher(scanner, booksId)) {
+                    return false;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private boolean validatePublisher(Scanner scanner, List<Integer> booksId) {
+
+        FieldValidator fieldValidator = new FieldValidator();
+
+        String nameAndValue = scanner.nextLine();
+        if (!fieldValidator.checkNumberOfTokens(nameAndValue)) {
+            System.out.println("No name for publisher in file!");
+            return false;
+        }
+
+        String booksIdAndValues = scanner.nextLine();
+        if (!fieldValidator.validateListOfId(booksIdAndValues, booksId)) {
+            System.out.println("Bad booksId for publisher in file!");
+            return false;
         }
 
         return true;

@@ -1,51 +1,97 @@
 package com.mycompany.serializers.stringformat.validators;
 
-import com.mycompany.serializers.stringformat.readers.BracketsFinder;
-
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Scanner;
 
-public class BooksValidator {
+public class BooksValidator implements ObjectsValidator {
 
-    private static final String CLASS_OPEN_BRACKET = "{";
-    private static final String CLASS_CLOSE_BRACKET = "}";
+    private static final String AUTHOR_BLOCK_NAME = "Authors";
 
-    private static final int OFFSET_FROM_OPEN_BRACKET = 1;
+    private static final String BOOKS_BLOCK_NAME = "Books";
 
-    public static boolean validate(String booksContent, String authorsContent) {
-        List<Integer> openBracketPositions = BracketsFinder.getBracketPositions(booksContent, CLASS_OPEN_BRACKET);
-        List<Integer> closeBracketPositions = BracketsFinder.getBracketPositions(booksContent, CLASS_CLOSE_BRACKET);
+    @Override
+    public boolean areObjectsValid(File file) throws FileNotFoundException {
 
-        List<Integer> authorsAvailableId = GetterAvailableIdList.getIdList(authorsContent);
+        try (Scanner scanner = new Scanner(file)) {
 
-        for (int i = 0; i < openBracketPositions.size(); i++) {
-            int openBracketPosition = openBracketPositions.get(i);
-            int closeBracketPosition = closeBracketPositions.get(i);
+            List<Integer> authorsId = null;
 
-            String contentOfClass = booksContent.substring(openBracketPosition + OFFSET_FROM_OPEN_BRACKET, closeBracketPosition);
+            while (scanner.hasNext()) {
+                String line = scanner.nextLine();
 
-            Scanner scanner = new Scanner(contentOfClass);
-            scanner.nextLine();
+                if (line.contains(AUTHOR_BLOCK_NAME)) {
+                    GetterAvailableIdList getterAvailableIdList = new GetterAvailableIdList();
 
-            String idAndValue = scanner.nextLine();
-            if (!FieldValidator.validateId(idAndValue)) {
-                return false;
+                    authorsId = getterAvailableIdList.getIdList(scanner);
+
+                    break;
+                }
             }
 
-            String nameAndValue = scanner.nextLine();
-            if (!FieldValidator.checkNumberOfTokens(nameAndValue)) {
-                return false;
+            if (authorsId != null) {
+                while (scanner.hasNext()) {
+                    String line = scanner.nextLine();
+
+                    if (line.contains(BOOKS_BLOCK_NAME)) {
+                        break;
+                    }
+
+                }
             }
 
-            String publicationDateAndValue = scanner.nextLine();
-            if (!FieldValidator.validateDate(publicationDateAndValue)) {
-                return false;
+            return scanner.hasNext() && validateBooks(scanner, authorsId);
+        }
+    }
+
+
+    private boolean validateBooks(Scanner scanner, List<Integer> authorsId) {
+
+        while (scanner.hasNext()) {
+
+            String line = scanner.nextLine();
+
+            if (line.contains(LIST_CLOSE_BRACKET)) {
+                return true;
             }
 
-            String authorsIdAndValues = scanner.nextLine();
-            if (!FieldValidator.validateListOfId(authorsIdAndValues, authorsAvailableId)) {
-                return false;
+            if (line.contains(CLASS_OPEN_BRACKET)) {
+                if (!validateBook(scanner, authorsId)) {
+                    return false;
+                }
             }
+        }
+
+        return false;
+    }
+
+    private boolean validateBook(Scanner scanner, List<Integer> authorsId) {
+
+        FieldValidator fieldValidator = new FieldValidator();
+
+        String idAndValue = scanner.nextLine();
+        if (!fieldValidator.validateId(idAndValue)) {
+            System.out.println("Bad book id in file!");
+            return false;
+        }
+
+        String nameAndValue = scanner.nextLine();
+        if (!fieldValidator.checkNumberOfTokens(nameAndValue)) {
+            System.out.println("No title for book in file!");
+            return false;
+        }
+
+        String publicationDateAndValue = scanner.nextLine();
+        if (!fieldValidator.validateDate(publicationDateAndValue)) {
+            System.out.println("Bad publication day for book in file!");
+            return false;
+        }
+
+        String authorsIdAndValues = scanner.nextLine();
+        if (!fieldValidator.validateListOfId(authorsIdAndValues, authorsId)) {
+            System.out.println("Bad authorsId for book in file!");
+            return false;
         }
 
         return true;

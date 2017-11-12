@@ -2,43 +2,62 @@ package com.mycompany.serializers.stringformat.readers;
 
 import com.mycompany.entities.PublisherEntity;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class PublishersReader {
+
     private static final String CLASS_OPEN_BRACKET = "{";
-    private static final String CLASS_CLOSE_BRACKET = "}";
+
+    private static final String LIST_CLOSE_BRACKET = "]";
 
     private static final String DELIMITER_BETWEEN_FIELD_VALUE = ":";
 
     private static final int POSITION_OF_VALUE_TOKEN = 1;
 
-    public static List<PublisherEntity> readBooks(String content) {
+    private static final String PUBLISHERS_BLOCK_NAME = "Publishers";
+
+    public List<PublisherEntity> read(File file) throws FileNotFoundException {
+
         List<PublisherEntity> publisherEntities = new ArrayList<>();
 
-        List<Integer> openBracketPositions = BracketsFinder.getBracketPositions(content, CLASS_OPEN_BRACKET);
-        List<Integer> closeBracketPositions = BracketsFinder.getBracketPositions(content, CLASS_CLOSE_BRACKET);
+        try (Scanner scanner = new Scanner(file)) {
 
-        for (int i = 0; i < openBracketPositions.size(); i++) {
-            int openBracketPosition = openBracketPositions.get(i);
-            int closeBracketPosition = closeBracketPositions.get(i);
+            while (scanner.hasNext()) {
+                String line = scanner.nextLine();
 
-            String contentOfClass = content.substring(openBracketPosition + 1, closeBracketPosition);
+                if (line.contains(PUBLISHERS_BLOCK_NAME)) {
+                    break;
+                }
+            }
 
-            Scanner scanner = new Scanner(contentOfClass);
+            while (scanner.hasNext()) {
+                String line = scanner.nextLine();
 
-            scanner.nextLine();
+                if (line.contains(CLASS_OPEN_BRACKET)) {
+                    publisherEntities.add(getPublisherEntity(scanner));
+                }
 
-            String nameAndValue = scanner.nextLine();
-            String name = nameAndValue.split(DELIMITER_BETWEEN_FIELD_VALUE)[POSITION_OF_VALUE_TOKEN].trim();
-
-            String booksIdList = scanner.nextLine();
-            List<Integer> booksId = ListIdGetter.getIdList(booksIdList);
-
-            publisherEntities.add(new PublisherEntity(name, booksId));
+                if (line.contains(LIST_CLOSE_BRACKET)) {
+                    break;
+                }
+            }
         }
 
         return publisherEntities;
+    }
+
+    private PublisherEntity getPublisherEntity(Scanner scanner) {
+
+        String nameAndValue = scanner.nextLine();
+        String name = nameAndValue.split(DELIMITER_BETWEEN_FIELD_VALUE)[POSITION_OF_VALUE_TOKEN].trim();
+
+        String booksIdList = scanner.nextLine();
+        List<Integer> booksId = ListIdGetter.getIdList(booksIdList);
+
+        return new PublisherEntity(name, booksId);
     }
 }

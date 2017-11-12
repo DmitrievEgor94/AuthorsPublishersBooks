@@ -1,86 +1,85 @@
 package com.mycompany.serializers.stringformat.validators;
 
-import com.mycompany.serializers.stringformat.readers.BracketsFinder;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.List;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-public class AuthorsValidator {
+public class AuthorsValidator implements ObjectsValidator {
 
-    private static final String CLASS_OPEN_BRACKET = "{";
-    private static final String CLASS_CLOSE_BRACKET = "}";
-    static private final String ABSENT_DEATH_DATE = "-";
+    private static final String AUTHOR_BLOCK_NAME = "Authors";
 
-    private static final String DELIMITER_BETWEEN_FIELD_VALUE = ":";
-    private static final int NUMBER_OF_NEEDED_TOKENS = 2;
-    private static final int POSITION_OF_VALUE_TOKEN = 1;
+    @Override
+    public boolean areObjectsValid(File file) throws FileNotFoundException {
 
-    private static final int OFFSET_FROM_OPEN_BRACKET = 1;
+        try (Scanner scanner = new Scanner(file)) {
 
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+            while (scanner.hasNext()) {
+                String line = scanner.nextLine();
 
-    public static boolean validate(String content) {
-        List<Integer> openBracketPositions = BracketsFinder.getBracketPositions(content, CLASS_OPEN_BRACKET);
-        List<Integer> closeBracketPositions = BracketsFinder.getBracketPositions(content, CLASS_CLOSE_BRACKET);
-
-        for (int i = 0; i < openBracketPositions.size(); i++) {
-            int openBracketPosition = openBracketPositions.get(i);
-            int closeBracketPosition = closeBracketPositions.get(i);
-
-            String contentOfClass = content.substring(openBracketPosition + OFFSET_FROM_OPEN_BRACKET, closeBracketPosition);
-
-            Scanner scanner = new Scanner(contentOfClass);
-            scanner.nextLine();
-
-            String idAndValue = scanner.nextLine();
-            if (!FieldValidator.validateId(idAndValue)) {
-                return false;
+                if (line.contains(AUTHOR_BLOCK_NAME)) {
+                    break;
+                }
             }
 
-            String nameAndValue = scanner.nextLine();
-            if (!FieldValidator.checkNumberOfTokens(nameAndValue)) {
-                return false;
+            return scanner.hasNext() && validateAuthors(scanner);
+        }
+    }
+
+    private boolean validateAuthors(Scanner scanner) {
+
+        while (scanner.hasNext()) {
+
+            String line = scanner.nextLine();
+
+            if (line.contains(LIST_CLOSE_BRACKET)) {
+                return true;
             }
 
-            String birthDayAndValue = scanner.nextLine();
-            if (!FieldValidator.validateDate(birthDayAndValue)) {
-                return false;
-            }
-
-            String dayOfDeathValue = scanner.nextLine();
-            if (!validateDayOfDeath(dayOfDeathValue)) {
-                return false;
-            }
-
-            String sexAndValue = scanner.nextLine();
-            if (!FieldValidator.checkNumberOfTokens(sexAndValue)) {
-                return false;
+            if (line.contains(CLASS_OPEN_BRACKET)) {
+                if (!validateAuthor(scanner)) {
+                    return false;
+                }
             }
         }
 
-        return true;
+        return false;
     }
 
+    private boolean validateAuthor(Scanner scanner) {
 
-    static private boolean validateDayOfDeath(String dayAndValue) {
-        String[] tokens = dayAndValue.split(DELIMITER_BETWEEN_FIELD_VALUE);
+        FieldValidator fieldValidator = new FieldValidator();
 
-        if (tokens.length != NUMBER_OF_NEEDED_TOKENS) return false;
+        String idAndValue = scanner.nextLine();
+        if (!fieldValidator.validateId(idAndValue)) {
+            System.out.println("Bad author id in file!");
 
-        String date = tokens[POSITION_OF_VALUE_TOKEN].trim();
+            return false;
+        }
 
-        if (date.equals(ABSENT_DEATH_DATE)) return true;
+        String nameAndValue = scanner.nextLine();
+        if (!fieldValidator.checkNumberOfTokens(nameAndValue)) {
+            System.out.println("No name of author in file!");
+            return false;
+        }
 
-        try {
-            LocalDate.parse(date, FORMATTER);
-        } catch (DateTimeParseException e) {
+        String birthDayAndValue = scanner.nextLine();
+        if (!fieldValidator.validateDate(birthDayAndValue)) {
+            System.out.println("Bad day of birthday in file!");
+            return false;
+        }
+
+        String dayOfDeathValue = scanner.nextLine();
+        if (!fieldValidator.validateDayOfDeath(dayOfDeathValue)) {
+            System.out.println("Bad day of death in file!");
+            return false;
+        }
+
+        String sexAndValue = scanner.nextLine();
+        if (!fieldValidator.checkSexOfAuthor(sexAndValue)) {
+            System.out.println("Bad sex in file!");
             return false;
         }
 
         return true;
     }
-
 }
