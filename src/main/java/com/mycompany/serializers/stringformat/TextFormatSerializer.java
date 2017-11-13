@@ -7,6 +7,7 @@ import com.mycompany.models.Publisher;
 import com.mycompany.serializers.Serializer;
 import com.mycompany.serializers.stringformat.readers.AuthorsReader;
 import com.mycompany.serializers.stringformat.readers.BooksReader;
+import com.mycompany.serializers.stringformat.readers.ObjectsReader;
 import com.mycompany.serializers.stringformat.readers.PublishersReader;
 import com.mycompany.serializers.stringformat.validators.FileNotValidException;
 import com.mycompany.serializers.stringformat.writers.AuthorsWriterInTextFile;
@@ -33,6 +34,10 @@ public class TextFormatSerializer implements Serializer {
     static private final ObjectsWriter<AuthorEntity> AUTHORS_WRITER = new AuthorsWriterInTextFile();
     static private final ObjectsWriter<BookEntity> BOOKS_WRITER = new BooksWriterInTextFile();
     static private final ObjectsWriter<PublisherEntity> PUBLISHERS_WRITER = new PublishersWriterInFile();
+
+    static private final ObjectsReader<AuthorEntity> AUTHORS_READER = new AuthorsReader();
+    static private final ObjectsReader<BookEntity> BOOKS_READER = new BooksReader();
+    static private final ObjectsReader<PublisherEntity> PUBLISHERS_READER = new PublishersReader();
 
 
     public void serializeObjects(List<Publisher> publishers, String fileWithObjects) throws FileNotFoundException {
@@ -69,7 +74,6 @@ public class TextFormatSerializer implements Serializer {
         }
     }
 
-
     @Override
     public List<Publisher> deserializeObject(String fileWithObjects) throws IOException, FileNotValidException {
 
@@ -77,16 +81,14 @@ public class TextFormatSerializer implements Serializer {
 
         try (Scanner scanner = new Scanner(file)) {
 
-            AuthorsReader authorsReader = new AuthorsReader();
-            List<AuthorEntity> authorsEntities = authorsReader.read(scanner);
+            List<AuthorEntity> authorsEntities = AUTHORS_READER.read(scanner);
             List<Author> authors = ModelsRestorator.getListOfAuthors(authorsEntities);
 
             List<Integer> availableAuthorsId = authorsEntities.stream()
                     .map(AuthorEntity::getId)
                     .collect(Collectors.toList());
 
-            BooksReader booksReader = new BooksReader();
-            List<BookEntity> bookEntities = booksReader.read(scanner);
+            List<BookEntity> bookEntities = BOOKS_READER.read(scanner);
 
             for (BookEntity bookEntity : bookEntities) {
                 if (Collections.indexOfSubList(availableAuthorsId, bookEntity.getAuthorsId()) == -1) {
@@ -100,8 +102,7 @@ public class TextFormatSerializer implements Serializer {
                     .map(BookEntity::getId)
                     .collect(Collectors.toList());
 
-            PublishersReader publishersReader = new PublishersReader();
-            List<PublisherEntity> publisherEntities = publishersReader.read(scanner);
+            List<PublisherEntity> publisherEntities = PUBLISHERS_READER.read(scanner);
 
             for (PublisherEntity publisherEntity : publisherEntities) {
                 if (Collections.indexOfSubList(availableBooksId, publisherEntity.getBooksId()) == -1) {
