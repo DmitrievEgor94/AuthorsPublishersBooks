@@ -6,21 +6,14 @@ import java.io.PrintWriter;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-public class BooksWriterInTextFile {
-    private static final String LIST_OPEN_BRACKET = "[";
-    private static final String LIST_CLOSE_BRACKET = "]";
-
-    private static final String CLASS_OPEN_BRACKET = "{";
-    private static final String CLASS_CLOSE_BRACKET = "}";
+public class BooksWriterInTextFile implements ObjectsWriter<BookEntity> {
 
     private static final String ID_FIELD = "Id";
     private static final String TITLE_FIELD = "Title";
     private static final String PUBLICATION_DATE_FIELD = "PublicationDate";
     private static final String AUTHORS_ID_FIELD = "AuthorId";
 
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-
-    public static void writeBooks(PrintWriter file, List<BookEntity> books) {
+    public void write(PrintWriter file, List<BookEntity> books) {
         if (file == null) return;
 
         file.println(LIST_OPEN_BRACKET);

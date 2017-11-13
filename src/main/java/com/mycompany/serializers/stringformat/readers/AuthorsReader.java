@@ -3,56 +3,40 @@ package com.mycompany.serializers.stringformat.readers;
 import com.mycompany.entities.AuthorEntity;
 import com.mycompany.models.Author;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class AuthorsReader {
-
-    private static final String CLASS_OPEN_BRACKET = "{";
-
-    private static final String LIST_CLOSE_BRACKET = "]";
+public class AuthorsReader implements ObjectsReader<AuthorEntity> {
 
     static private final String ABSENT_DEATH_DATE = "-";
 
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-
-    private static final String DELIMITER_BETWEEN_FIELD_VALUE = ":";
-
-    private static final int POSITION_OF_VALUE_TOKEN = 1;
-
     private static final String AUTHOR_BLOCK_NAME = "Authors";
 
-    public List<AuthorEntity> read(File file) throws FileNotFoundException {
+    public List<AuthorEntity> read(Scanner scanner) {
 
         List<AuthorEntity> authorEntities = new ArrayList<>();
 
-        try (Scanner scanner = new Scanner(file)) {
+        while (scanner.hasNext()) {
+            String line = scanner.nextLine();
 
-            while (scanner.hasNext()) {
-                String line = scanner.nextLine();
+            if (line.contains(AUTHOR_BLOCK_NAME)) {
+                break;
+            }
+        }
 
-                if (line.contains(AUTHOR_BLOCK_NAME)) {
-                    break;
-                }
+        while (scanner.hasNext()) {
+            String line = scanner.nextLine();
+
+            if (line.contains(CLASS_OPEN_BRACKET)) {
+                authorEntities.add(getAuthorEntity(scanner));
             }
 
-            while (scanner.hasNext()) {
-                String line = scanner.nextLine();
-
-                if (line.contains(CLASS_OPEN_BRACKET)) {
-                    authorEntities.add(getAuthorEntity(scanner));
-                }
-
-                if (line.contains(LIST_CLOSE_BRACKET)) {
-                    break;
-                }
-
+            if (line.contains(LIST_CLOSE_BRACKET)) {
+                break;
             }
+
         }
 
         return authorEntities;

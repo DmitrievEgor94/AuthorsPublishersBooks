@@ -19,6 +19,7 @@ import com.mycompany.serializers.stringformat.readers.PublishersReader;
 import com.mycompany.serializers.stringformat.validators.Validator;
 import com.mycompany.serializers.stringformat.writers.AuthorsWriterInTextFile;
 import com.mycompany.serializers.stringformat.writers.BooksWriterInTextFile;
+import com.mycompany.serializers.stringformat.writers.ObjectsWriter;
 import com.mycompany.serializers.stringformat.writers.PublishersWriterInFile;
 
 import java.io.File;
@@ -34,6 +35,11 @@ public class TextFormatSerializer implements Serializer {
     static private final String AUTHOR_MODEL = "Authors";
     static private final String BOOK_MODEL = "Books";
     static private final String PUBLISHER_MODEL = "Publishers";
+
+    static private final ObjectsWriter<AuthorEntity> AUTHORS_WRITER = new AuthorsWriterInTextFile();
+    static private final ObjectsWriter<BookEntity> BOOKS_WRITER = new BooksWriterInTextFile();
+    static private final ObjectsWriter<PublisherEntity> PUBLISHERS_WRITER = new PublishersWriterInFile();
+
 
     public void serializeObjects(List<Publisher> publishers, String fileWithObjects) throws FileNotFoundException {
         try (PrintWriter fileWriter = new PrintWriter(new File(fileWithObjects))) {
@@ -55,15 +61,15 @@ public class TextFormatSerializer implements Serializer {
             List<PublisherEntity> publisherEntities = PublisherEntitiesCreator.getListPublisherEntities(publishers, bookEntities);
 
             fileWriter.print(AUTHOR_MODEL);
-            AuthorsWriterInTextFile.writeAuthors(fileWriter, authorEntities);
+            AUTHORS_WRITER.write(fileWriter, authorEntities);
 
             fileWriter.println();
             fileWriter.print(BOOK_MODEL);
-            BooksWriterInTextFile.writeBooks(fileWriter, bookEntities);
+            BOOKS_WRITER.write(fileWriter, bookEntities);
 
             fileWriter.println();
             fileWriter.print(PUBLISHER_MODEL);
-            PublishersWriterInFile.writePublishers(fileWriter, publisherEntities);
+            PUBLISHERS_WRITER.write(fileWriter, publisherEntities);
 
             fileWriter.close();
         }

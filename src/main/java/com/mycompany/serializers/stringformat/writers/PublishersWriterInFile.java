@@ -5,17 +5,12 @@ import com.mycompany.entities.PublisherEntity;
 import java.io.PrintWriter;
 import java.util.List;
 
-public class PublishersWriterInFile {
-    private static final String LIST_OPEN_BRACKET = "[";
-    private static final String LIST_CLOSE_BRACKET = "]";
-
-    private static final String CLASS_OPEN_BRACKET = "{";
-    private static final String CLASS_CLOSE_BRACKET = "}";
+public class PublishersWriterInFile implements ObjectsWriter<PublisherEntity> {
 
     private static final String NAME_FIELD = "Name";
     private static final String BOOKS_ID_FIELD = "BooksID";
 
-    public static void writePublishers(PrintWriter file, List<PublisherEntity> publishers) {
+    public void write(PrintWriter file, List<PublisherEntity> publishers) {
         if (file == null) return;
 
         file.println(LIST_OPEN_BRACKET);

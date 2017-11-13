@@ -2,54 +2,38 @@ package com.mycompany.serializers.stringformat.readers;
 
 import com.mycompany.entities.BookEntity;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class BooksReader {
-
-    private static final String CLASS_OPEN_BRACKET = "{";
-
-    private static final String LIST_CLOSE_BRACKET = "]";
-
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-
-    private static final String DELIMITER_BETWEEN_FIELD_VALUE = ":";
-
-    private static final int POSITION_OF_VALUE_TOKEN = 1;
+public class BooksReader implements ObjectsReader<BookEntity> {
 
     private static final String BOOKS_BLOCK_NAME = "Books";
 
-    public List<BookEntity> read(File file) throws FileNotFoundException {
+    public List<BookEntity> read(Scanner scanner) {
 
         List<BookEntity> bookEntities = new ArrayList<>();
 
-        try (Scanner scanner = new Scanner(file)) {
+        while (scanner.hasNext()) {
+            String line = scanner.nextLine();
 
-            while (scanner.hasNext()) {
-                String line = scanner.nextLine();
+            if (line.contains(BOOKS_BLOCK_NAME)) {
+                break;
+            }
+        }
 
-                if (line.contains(BOOKS_BLOCK_NAME)) {
-                    break;
-                }
+        while (scanner.hasNext()) {
+            String line = scanner.nextLine();
+
+            if (line.contains(CLASS_OPEN_BRACKET)) {
+                bookEntities.add(getBookEntity(scanner));
             }
 
-            while (scanner.hasNext()) {
-                String line = scanner.nextLine();
-
-                if (line.contains(CLASS_OPEN_BRACKET)) {
-                    bookEntities.add(getBookEntity(scanner));
-                }
-
-                if (line.contains(LIST_CLOSE_BRACKET)) {
-                    break;
-                }
-
+            if (line.contains(LIST_CLOSE_BRACKET)) {
+                break;
             }
+
         }
 
         return bookEntities;

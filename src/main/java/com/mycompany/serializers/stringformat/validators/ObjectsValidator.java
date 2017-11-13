@@ -10,4 +10,5 @@ public interface ObjectsValidator {
     String LIST_CLOSE_BRACKET = "]";
 
     boolean areObjectsValid(File file) throws FileNotFoundException;
+
 }

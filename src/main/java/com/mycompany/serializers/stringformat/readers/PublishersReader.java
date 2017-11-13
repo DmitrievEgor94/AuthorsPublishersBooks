@@ -2,48 +2,35 @@ package com.mycompany.serializers.stringformat.readers;
 
 import com.mycompany.entities.PublisherEntity;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class PublishersReader {
-
-    private static final String CLASS_OPEN_BRACKET = "{";
-
-    private static final String LIST_CLOSE_BRACKET = "]";
-
-    private static final String DELIMITER_BETWEEN_FIELD_VALUE = ":";
-
-    private static final int POSITION_OF_VALUE_TOKEN = 1;
+public class PublishersReader implements ObjectsReader<PublisherEntity> {
 
     private static final String PUBLISHERS_BLOCK_NAME = "Publishers";
 
-    public List<PublisherEntity> read(File file) throws FileNotFoundException {
+    public List<PublisherEntity> read(Scanner scanner) {
 
         List<PublisherEntity> publisherEntities = new ArrayList<>();
 
-        try (Scanner scanner = new Scanner(file)) {
+        while (scanner.hasNext()) {
+            String line = scanner.nextLine();
 
-            while (scanner.hasNext()) {
-                String line = scanner.nextLine();
+            if (line.contains(PUBLISHERS_BLOCK_NAME)) {
+                break;
+            }
+        }
 
-                if (line.contains(PUBLISHERS_BLOCK_NAME)) {
-                    break;
-                }
+        while (scanner.hasNext()) {
+            String line = scanner.nextLine();
+
+            if (line.contains(CLASS_OPEN_BRACKET)) {
+                publisherEntities.add(getPublisherEntity(scanner));
             }
 
-            while (scanner.hasNext()) {
-                String line = scanner.nextLine();
-
-                if (line.contains(CLASS_OPEN_BRACKET)) {
-                    publisherEntities.add(getPublisherEntity(scanner));
-                }
-
-                if (line.contains(LIST_CLOSE_BRACKET)) {
-                    break;
-                }
+            if (line.contains(LIST_CLOSE_BRACKET)) {
+                break;
             }
         }
 

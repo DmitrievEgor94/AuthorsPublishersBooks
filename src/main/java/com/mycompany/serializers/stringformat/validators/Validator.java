@@ -1,7 +1,5 @@
 package com.mycompany.serializers.stringformat.validators;
 
-import com.mycompany.serializers.stringformat.readers.BracketsFinder;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;

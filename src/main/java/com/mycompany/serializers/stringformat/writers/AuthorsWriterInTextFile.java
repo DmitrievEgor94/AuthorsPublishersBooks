@@ -4,15 +4,9 @@ import com.mycompany.entities.AuthorEntity;
 
 import java.io.PrintWriter;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-public class AuthorsWriterInTextFile {
-    private static final String LIST_OPEN_BRACKET = "[";
-    private static final String LIST_CLOSE_BRACKET = "]";
-
-    private static final String CLASS_OPEN_BRACKET = "{";
-    private static final String CLASS_CLOSE_BRACKET = "}";
+public class AuthorsWriterInTextFile implements ObjectsWriter<AuthorEntity> {
 
     private static final String ID_FIELD = "Id";
     private static final String NAME_FIELD = "Name";
@@ -20,10 +14,9 @@ public class AuthorsWriterInTextFile {
     private static final String DAY_OF_DEATH_FIELD = "DayOfDeath";
     private static final String SEX_FIELD = "Sex";
 
-    static private final String ABSENT_DEATH_DATE = "-";
-    static private final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+    private static final String ABSENT_DEATH_DATE = "-";
 
-    public static void writeAuthors(PrintWriter file, List<AuthorEntity> authors) {
+    public void write(PrintWriter file, List<AuthorEntity> authors) {
         if (file == null) return;
 
         file.println(LIST_OPEN_BRACKET);
