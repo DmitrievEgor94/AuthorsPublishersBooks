@@ -6,15 +6,15 @@ import java.util.Scanner;
 
 class ListIdGetter {
     static List<Integer> getIdList(String contentWithId) {
-        List<Integer> authorsId = new ArrayList<>();
+        List<Integer> listId = new ArrayList<>();
 
         Scanner scanner = new Scanner(contentWithId);
 
         scanner.next();
 
         while (scanner.hasNextInt())
-            authorsId.add(scanner.nextInt());
+            listId.add(scanner.nextInt());
 
-        return authorsId;
+        return listId;
     }
 }

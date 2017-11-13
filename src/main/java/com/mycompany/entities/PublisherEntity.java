@@ -5,6 +5,7 @@ import com.mycompany.models.Publisher;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class PublisherEntity implements Serializable {
@@ -13,7 +14,7 @@ public class PublisherEntity implements Serializable {
     private String name;
     private List<Integer> books;
 
-    public PublisherEntity(Publisher publisher, Map<String, Integer> mapWithBooksTitles, int id) {
+    PublisherEntity(Publisher publisher, Map<String, Integer> mapWithBooksTitles, int id) {
         this.name = publisher.getName();
         this.books = publisher.getBooks().stream()
                 .map(b -> mapWithBooksTitles.get(b.getTitle()))
@@ -44,7 +45,8 @@ public class PublisherEntity implements Serializable {
 
         PublisherEntity entity = (PublisherEntity) obj;
 
-        return this.name.equals(entity.name) && this.books.equals(entity.books);
+        return Objects.equals(name, entity.name)
+                && Objects.equals(books, entity.books);
 
     }
 }

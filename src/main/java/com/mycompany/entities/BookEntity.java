@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class BookEntity implements Serializable {
@@ -17,7 +18,7 @@ public class BookEntity implements Serializable {
     private LocalDate publicationDate;
     private List<Integer> authorsId;
 
-    public BookEntity(Book book, Map<String, Integer> mapWithAuthorsNames, int id) {
+    BookEntity(Book book, Map<String, Integer> mapWithAuthorsNames, int id) {
         this.title = book.getTitle();
 
         this.publicationDate = book.getPublicationDate();
@@ -61,15 +62,10 @@ public class BookEntity implements Serializable {
 
         BookEntity entity = (BookEntity) obj;
 
-        if (!this.id.equals(entity.id)) {
-            return false;
-        }
-
-        if (!this.title.equals(entity.title)) {
-            return false;
-        }
-
-        return this.publicationDate.equals(entity.publicationDate) && this.authorsId.equals(entity.authorsId);
+        return Objects.equals(id, entity.id)
+                && Objects.equals(title, entity.title)
+                && Objects.equals(publicationDate, entity.publicationDate)
+                && Objects.equals(authorsId, entity.authorsId);
 
     }
 }

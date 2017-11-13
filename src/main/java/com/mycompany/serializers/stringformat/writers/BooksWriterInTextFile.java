@@ -3,7 +3,6 @@ package com.mycompany.serializers.stringformat.writers;
 import com.mycompany.entities.BookEntity;
 
 import java.io.PrintWriter;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class BooksWriterInTextFile implements ObjectsWriter<BookEntity> {

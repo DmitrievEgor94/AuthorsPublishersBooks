@@ -64,9 +64,10 @@ public class Book {
 
         Book book = (Book) obj;
 
-        return ((this.title == null) ? (book.title == null) : (this.title.equals(book.title)))
-                && ((this.publicationDate == null) ? (book.publicationDate == null) : (this.publicationDate.equals(book.publicationDate)))
-                && ((this.authors == null) ? (book.authors == null) : (this.authors.equals(book.authors)));
+        return Objects.equals(title, book.title)
+                && Objects.equals(publicationDate, book.publicationDate)
+                && Objects.equals(authors, book.authors);
+
 
     }
 }

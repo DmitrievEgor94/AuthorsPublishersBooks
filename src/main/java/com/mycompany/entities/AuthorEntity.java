@@ -4,6 +4,7 @@ import com.mycompany.models.Author;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class AuthorEntity implements Serializable {
 
@@ -14,7 +15,7 @@ public class AuthorEntity implements Serializable {
     private LocalDate dayOfDeath;
     private Author.Sex sex;
 
-    public AuthorEntity(Author author, int id) {
+    AuthorEntity(Author author, int id) {
         this.name = author.getName();
         this.dayOfBirthday = author.getDayOfBirthday();
         this.dayOfDeath = author.getDayOfDeath().orElse(null);
@@ -63,16 +64,11 @@ public class AuthorEntity implements Serializable {
 
         AuthorEntity entity = (AuthorEntity) obj;
 
-        if (!this.name.equals(entity.name)) {
-            return false;
-        }
-        if (!this.id.equals(entity.id)) {
-            return false;
-        }
-        if (!this.dayOfBirthday.equals(entity.dayOfBirthday)) {
-            return false;
-        }
+        return Objects.equals(id, entity.id)
+                && Objects.equals(name, entity.name)
+                && Objects.equals(dayOfBirthday, entity.dayOfBirthday)
+                && Objects.equals(dayOfDeath, entity.dayOfDeath)
+                && Objects.equals(sex, entity.sex);
 
-        return this.dayOfDeath.equals(entity.dayOfDeath) && this.sex.equals(entity.sex);
     }
 }

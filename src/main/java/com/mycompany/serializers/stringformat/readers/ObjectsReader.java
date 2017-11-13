@@ -1,6 +1,8 @@
 package com.mycompany.serializers.stringformat.readers;
 
-import java.io.FileNotFoundException;
+import com.mycompany.serializers.stringformat.validators.FieldValidator;
+import com.mycompany.serializers.stringformat.validators.FileNotValidException;
+
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Scanner;
@@ -17,6 +19,8 @@ public interface ObjectsReader<T> {
 
     DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
-    List<T> read(Scanner scanner);
+    FieldValidator FIELD_VALIDATOR = new FieldValidator();
+
+    List<T> read(Scanner scanner) throws FileNotValidException;
 
 }

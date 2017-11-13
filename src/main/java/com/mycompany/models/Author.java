@@ -75,10 +75,10 @@ public class Author {
 
         Author author = (Author) obj;
 
-        return ((this.name == null) ? (author.name == null) : (this.name.equals(author.name)))
-                && ((this.dayOfBirthday == null) ? (author.dayOfBirthday == null) : (this.dayOfBirthday.equals(author.dayOfBirthday)))
-                && ((this.dayOfDeath == null) ? (author.dayOfDeath == null) : (this.dayOfDeath.equals(author.dayOfDeath)))
-                && ((this.sex == null) ? (author.sex == null) : (this.sex.equals(author.sex)));
+        return  Objects.equals(name, author.name)
+                && Objects.equals(dayOfBirthday, author.dayOfBirthday)
+                && Objects.equals(dayOfDeath, author.dayOfDeath)
+                && Objects.equals(sex, author.sex);
 
     }
 }

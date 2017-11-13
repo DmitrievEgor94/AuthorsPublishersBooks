@@ -1,14 +1,6 @@
 package com.mycompany.serializers;
 
-import com.mycompany.entities.AuthorEntity;
-import com.mycompany.entities.BookEntity;
-import com.mycompany.entities.PublisherEntity;
-import com.mycompany.entities.creators.AuthorEntitiesCreator;
-import com.mycompany.entities.creators.BookEntitiesCreator;
-import com.mycompany.entities.creators.PublisherEntitiesCreator;
-import com.mycompany.entities.restorators.AuthorsRestorator;
-import com.mycompany.entities.restorators.BooksRestorator;
-import com.mycompany.entities.restorators.PublishersRestorator;
+import com.mycompany.entities.*;
 import com.mycompany.models.Author;
 import com.mycompany.models.Book;
 import com.mycompany.models.Publisher;
@@ -39,9 +31,9 @@ public class JavaSerializer implements Serializer {
                 .distinct()
                 .collect(Collectors.toList());
 
-        List<AuthorEntity> authorEntities = AuthorEntitiesCreator.getListAuthorEntities(authors);
-        List<BookEntity> bookEntities = BookEntitiesCreator.getListBookEntities(books, authorEntities);
-        List<PublisherEntity> publisherEntities = PublisherEntitiesCreator.getListPublisherEntities(publishers, bookEntities);
+        List<AuthorEntity> authorEntities = EntitiesCreator.getListAuthorEntities(authors);
+        List<BookEntity> bookEntities = EntitiesCreator.getListBookEntities(books, authorEntities);
+        List<PublisherEntity> publisherEntities = EntitiesCreator.getListPublisherEntities(publishers, bookEntities);
 
         out.writeObject(authorEntities);
         out.writeObject(bookEntities);
@@ -66,10 +58,10 @@ public class JavaSerializer implements Serializer {
             List<BookEntity> bookEntities = (List<BookEntity>) in.readObject();
             List<PublisherEntity> publisherEntities = (List<PublisherEntity>) in.readObject();
 
-            List<Author> authors = AuthorsRestorator.getListOfAuthors(authorEntities);
-            List<Book> books = BooksRestorator.getListOfBooks(bookEntities, authors, authorEntities);
+            List<Author> authors = ModelsRestorator.getListOfAuthors(authorEntities);
+            List<Book> books = ModelsRestorator.getListOfBooks(bookEntities, authors, authorEntities);
 
-            return PublishersRestorator.getListOfPublishers(publisherEntities, bookEntities, books);
+            return ModelsRestorator.getListOfPublishers(publisherEntities, bookEntities, books);
         } catch (ClassNotFoundException e) {
             System.out.println(e);
         } finally {

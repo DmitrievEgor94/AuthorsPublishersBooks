@@ -71,7 +71,7 @@ public abstract class TestSerializer {
     }
 
     @Before
-    public void getDeserializedObjects() throws IOException {
+    public void getDeserializedObjects() throws Exception {
         deserializedPublishers = serializer.deserializeObject(checkFileForSerializing);
 
         deserializedBooks = deserializedPublishers.stream()
@@ -87,14 +87,17 @@ public abstract class TestSerializer {
                 .collect(Collectors.toList());
     }
 
+    @Test
     public void testDeserializeAuthors() throws IOException {
         assertEquals(checkAuthors, deserializedAuthors);
     }
 
+    @Test
     public void testDeserializeBooks() throws IOException {
         assertEquals(checkBooks, deserializedBooks);
     }
 
+    @Test
     public void testDeserializePublishers() throws IOException {
         assertEquals(checkPublishers, deserializedPublishers);
     }

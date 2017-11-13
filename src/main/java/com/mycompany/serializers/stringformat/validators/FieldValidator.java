@@ -5,10 +5,9 @@ import com.mycompany.models.Author;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.List;
 import java.util.Scanner;
 
-class FieldValidator {
+public class FieldValidator {
     private static final String DELIMITER_BETWEEN_FIELD_VALUE = ":";
     private static final int NUMBER_OF_NEEDED_TOKENS = 2;
     private static final int POSITION_OF_VALUE_TOKEN = 1;
@@ -17,7 +16,7 @@ class FieldValidator {
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
-    boolean validateId(String idAndValue) {
+    public boolean validateId(String idAndValue) {
 
         String[] tokens = idAndValue.split(DELIMITER_BETWEEN_FIELD_VALUE);
 
@@ -34,7 +33,7 @@ class FieldValidator {
         return true;
     }
 
-    boolean validateDate(String dateFieldAndValue) {
+    public boolean validateDate(String dateFieldAndValue) {
 
         String[] tokens = dateFieldAndValue.split(DELIMITER_BETWEEN_FIELD_VALUE);
 
@@ -51,7 +50,7 @@ class FieldValidator {
         return true;
     }
 
-    boolean validateDayOfDeath(String dayAndValue) {
+    public boolean validateDayOfDeath(String dayAndValue) {
 
         String[] tokens = dayAndValue.split(DELIMITER_BETWEEN_FIELD_VALUE);
 
@@ -71,14 +70,14 @@ class FieldValidator {
     }
 
 
-    boolean checkNumberOfTokens(String string) {
+    public boolean checkNumberOfTokens(String string) {
 
         String[] tokens = string.split(DELIMITER_BETWEEN_FIELD_VALUE);
 
         return tokens.length == NUMBER_OF_NEEDED_TOKENS;
     }
 
-    boolean validateListOfId(String idAndValues, List<Integer> availableId) {
+    public boolean validateListOfId(String idAndValues) {
 
         String[] tokens = idAndValues.split(DELIMITER_BETWEEN_FIELD_VALUE);
 
@@ -86,18 +85,10 @@ class FieldValidator {
 
         Scanner scanner = new Scanner(tokens[POSITION_OF_VALUE_TOKEN]);
 
-        while (scanner.hasNextInt()) {
-            int id = scanner.nextInt();
-
-            if (!availableId.contains(id)) {
-                return false;
-            }
-        }
-
-        return true;
+        return scanner.hasNextInt();
     }
 
-    boolean checkSexOfAuthor(String sexAndValue) {
+    public boolean checkSexOfAuthor(String sexAndValue) {
 
         String[] tokens = sexAndValue.split(DELIMITER_BETWEEN_FIELD_VALUE);
 
