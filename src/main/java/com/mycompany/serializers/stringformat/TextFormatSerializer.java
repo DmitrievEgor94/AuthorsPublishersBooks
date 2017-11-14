@@ -41,6 +41,7 @@ public class TextFormatSerializer implements Serializer {
 
 
     public void serializeObjects(List<Publisher> publishers, String fileWithObjects) throws FileNotFoundException {
+
         try (PrintWriter fileWriter = new PrintWriter(new File(fileWithObjects))) {
 
             List<Book> books = publishers.stream()
@@ -77,9 +78,7 @@ public class TextFormatSerializer implements Serializer {
     @Override
     public List<Publisher> deserializeObject(String fileWithObjects) throws IOException, FileNotValidException {
 
-        File file = new File(fileWithObjects);
-
-        try (Scanner scanner = new Scanner(file)) {
+        try (Scanner scanner = new Scanner( new File(fileWithObjects))) {
 
             List<AuthorEntity> authorsEntities = AUTHORS_READER.read(scanner);
             List<Author> authors = ModelsRestorator.getListOfAuthors(authorsEntities);
